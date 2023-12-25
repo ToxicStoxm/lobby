@@ -1,7 +1,6 @@
 package com.x_tornado10.lobby;
 
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.x_tornado10.lobby.Managers.ConfigMgr;
@@ -69,7 +68,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     }
 
     @Override
-    public void onPluginMessageReceived(String channel, @NonNull Player player, byte @NonNull [] message) {
+    public void onPluginMessageReceived(@NonNull String channel, @NonNull Player player, byte @NonNull [] message) {
     }
     public void sendPlayerToServer(Player player, String serverName) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
