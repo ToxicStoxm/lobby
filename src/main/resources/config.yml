@@ -1,0 +1,11 @@
+Lobby: true
+Build-Mode: false
+Spawn:
+  World: world
+  X: 0.5
+  Y: 1
+  Z: 0.5
+  yaw: 180
+  pitch: 0
+Join-Message:
+  Actionbar: "Welcome back %PLAYER%"

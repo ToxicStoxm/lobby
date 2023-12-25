@@ -1,0 +1,13 @@
+name: lobby
+version: '${project.version}'
+main: com.x_tornado10.lobby.Lobby
+api-version: '1.20'
+authors: [x_Tornado10]
+description: Lobby plugin
+commands:
+  lobby:
+    aliases:
+      - l
+      - hub
+    description: teleports yo uto the lobby
+    usage: You are already connected to Lobby!
