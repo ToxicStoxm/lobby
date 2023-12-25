@@ -36,10 +36,18 @@ public class CompassListener implements Listener {
                     plugin.sendPlayerToServer(p, Server.Lobby);
                 }
             }
-            case Item.CRAFTISERVI -> p.sendMessage(ChatColor.GREEN + "Thank you for playing on Crafti-Servi-Network");
-            case Item.ETERNALSMP -> plugin.sendPlayerToServer(p, Server.EternalSMP);
-            case Item.SURVIVAL -> plugin.sendPlayerToServer(p, Server.Survival);
-
+            case Item.CRAFTISERVI -> {
+                p.closeInventory();
+                p.sendMessage(ChatColor.GREEN + "Thank you for playing on Crafti-Servi-Network");
+            }
+            case Item.ETERNALSMP -> {
+                p.closeInventory();
+                plugin.sendPlayerToServer(p, Server.EternalSMP);
+            }
+            case Item.SURVIVAL -> {
+                p.closeInventory();
+                plugin.sendPlayerToServer(p, Server.Survival);
+            }
         }
         e.setCancelled(true);
     }
