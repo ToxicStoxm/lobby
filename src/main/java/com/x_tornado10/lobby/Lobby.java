@@ -70,15 +70,6 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, @NonNull Player player, byte @NonNull [] message) {
-        if (!channel.equals("BungeeCord") && configMgr.isLobby()) {
-            return;
-        }
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        String subchannel = in.readUTF();
-        if (subchannel.equals("SomeSubChannel")) {
-            // Use the code sample in the 'Response' sections below to read
-            // the data.
-        }
     }
     public void sendPlayerToServer(Player player, String serverName) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
