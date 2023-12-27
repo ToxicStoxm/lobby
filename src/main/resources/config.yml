@@ -9,3 +9,4 @@ Spawn:
   pitch: 0
 Join-Message:
   Actionbar: "Welcome back %PLAYER%"
+Join-Counter:

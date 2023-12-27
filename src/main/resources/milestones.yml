@@ -1,0 +1,41 @@
+Milestones:
+  1:
+    Title: "Starter"
+    Subtitle: "You made first steps and spent a total of 10 Minutes on the Server! Great job!"
+    Color: "#753a02"
+    Playtime: 600
+  2:
+    Title: "Rookie"
+    Subtitle: "You reached 1 hour on the Server! You slowly become more advanced, don't you? Keep it up!"
+    Color: "#93CB56"
+    Playtime: 3600
+  3:
+    Title: "Hustler"
+    Subtitle: "What? It's already been 10 hours since your first steps on the Server? Time flies by..."
+    Color: "#9A2A2A"
+    Playtime: 36000
+  4:
+    Title: "Worker"
+    Subtitle: "You officially spent 1 Real life day in a Game. Go touch some good old grass!"
+    Color: "#03d3fc"
+    Playtime: 86400
+  5:
+    Title: "Crafter"
+    Subtitle: "48 hours and you still aren't tired? Great job!"
+    Color: "#7851a6"
+    Playtime: 172800
+  6:
+    Title: "Miner"
+    Subtitle: "The 3rd real life day on the server! You are doing great to become a pro!"
+    Color: "##aaa9ad"
+    Playtime: 259200
+  7:
+    Title: "Pro"
+    Subtitle: "You accomplished great things on this server! You deserve to be a real pro! Thanks for your commitment! (100 hours reached)"
+    Color: "#d4af37"
+    Playtime: 360000
+  8:
+    Title: "Grand Master"
+    Subtitle: "Whats wrong with you?! You are totally of some other breed!"
+    Color: "#000000"
+    Playtime: 36000000

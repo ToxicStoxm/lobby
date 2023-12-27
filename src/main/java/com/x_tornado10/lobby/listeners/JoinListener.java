@@ -1,46 +1,49 @@
 package com.x_tornado10.lobby.listeners;
 
 import com.x_tornado10.lobby.Lobby;
+import com.x_tornado10.lobby.loops.ActionBarDisplay;
 import com.x_tornado10.lobby.utils.Item;
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class JoinListener implements Listener {
     private static Location spawn;
     private final TextComponent join_msg;
+    private final HashMap<UUID, Integer> join_counter;
+    private final Lobby plugin;
     public JoinListener(Location spawn, String join_msg) {
+        plugin = Lobby.getInstance();
         JoinListener.spawn = spawn;
         this.join_msg = new TextComponent(join_msg);
+        join_counter = plugin.getConfigMgr().getJoinCounter();
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.teleport(spawn);
         lobby(p);
-        new BukkitRunnable() {
-            int i = 0;
-            @Override
-            public void run() {
-                if (i >= 4) cancel();
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(join_msg.getText().replace("%PLAYER%", p.getName())));
-                i++;
-            }
-        }.runTaskTimer(Lobby.getInstance(), 0,20);
+        p.setFoodLevel(20);
+        p.setTotalExperience(0);
+        p.setLevel(0);
+        new ActionBarDisplay(p,join_msg);
+        /*
+        if (join_counter.containsKey(p.getUniqueId())) {
+            join_counter.put(p.getUniqueId(), join_counter.get(p.getUniqueId()) + 1);
+            p.setLevel(join_counter.get(p.getUniqueId()));
+        } else {
+            join_counter.put(p.getUniqueId(), 0);
+        }
+
+         */
     }
     private void lobby(Player p) {
         Inventory inv = p.getInventory();
@@ -58,5 +61,8 @@ public class JoinListener implements Listener {
     }
     public static void tpSpawn(Player p) {
         p.teleport(spawn);
+    }
+    public void saveJoinCounter() {
+        plugin.getConfigMgr().saveJoinCounter(join_counter);
     }
 }

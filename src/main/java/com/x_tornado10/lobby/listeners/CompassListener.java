@@ -3,7 +3,7 @@ package com.x_tornado10.lobby.listeners;
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.Server;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,6 +22,7 @@ public class CompassListener implements Listener {
         Player p = (Player) e.getWhoClicked();
         if (e.getClickedInventory() == null) return;
         if (!e.getView().getTitle().equals(ChatColor.DARK_GRAY + "Game Menu")) return;
+        if (!e.getClick().isLeftClick() && !e.getClick().isRightClick()) return;
         ItemStack i = e.getClickedInventory().getItem(e.getSlot());
         if (i == null) return;
         ItemMeta meta = i.getItemMeta();

@@ -9,5 +9,4 @@ commands:
     aliases:
       - l
       - hub
-    description: teleports yo uto the lobby
-    usage: You are already connected to Lobby!
+    description: teleports you to the lobby

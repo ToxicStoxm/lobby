@@ -1,6 +1,16 @@
 package com.x_tornado10.lobby.utils;
 
+import com.x_tornado10.lobby.Lobby;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Paths {
+    public static void initialize() {
+        plPath = Lobby.getInstance().getDataFolder().getPath();
+        plFiles.add("milestones.yml");
+        plFiles.add("playtime.yml");
+    }
     public static String lobby = "Lobby";
     public static String world = "Spawn.World";
     public static String x = "Spawn.X";
@@ -10,5 +20,6 @@ public class Paths {
     public static String pitch = "Spawn.pitch";
     public static String join_msg = "Join-Message.Actionbar";
     public static String build_mode = "Build-Mode";
-
+    public static String plPath;
+    public static List<String> plFiles = new ArrayList<>();
 }
