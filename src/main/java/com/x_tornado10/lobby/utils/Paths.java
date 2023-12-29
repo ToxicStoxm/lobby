@@ -20,6 +20,9 @@ public class Paths {
     public static String pitch = "Spawn.pitch";
     public static String join_msg = "Join-Message.Actionbar";
     public static String build_mode = "Build-Mode";
+    public static String db_host = "Database.host";
+    public static  String db_username = "Database.username";
+    public static String db_password = "Database.password";
     public static String plPath;
     public static List<String> plFiles = new ArrayList<>();
 }

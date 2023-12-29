@@ -18,34 +18,20 @@ import java.util.*;
 public class JoinListener implements Listener {
     private static Location spawn;
     private final TextComponent join_msg;
-    private final HashMap<UUID, Integer> join_counter;
-    private final Lobby plugin;
     public JoinListener(Location spawn, String join_msg) {
-        plugin = Lobby.getInstance();
         JoinListener.spawn = spawn;
         this.join_msg = new TextComponent(join_msg);
-        join_counter = plugin.getConfigMgr().getJoinCounter();
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
+        lobby(e.getPlayer());
+    }
+    private void lobby(Player p) {
         p.teleport(spawn);
-        lobby(p);
         p.setFoodLevel(20);
         p.setTotalExperience(0);
         p.setLevel(0);
-        new ActionBarDisplay(p,join_msg);
-        /*
-        if (join_counter.containsKey(p.getUniqueId())) {
-            join_counter.put(p.getUniqueId(), join_counter.get(p.getUniqueId()) + 1);
-            p.setLevel(join_counter.get(p.getUniqueId()));
-        } else {
-            join_counter.put(p.getUniqueId(), 0);
-        }
 
-         */
-    }
-    private void lobby(Player p) {
         Inventory inv = p.getInventory();
         if (!Lobby.getInstance().getConfigMgr().isBuildMode()) inv.clear();
         ItemStack compass = new ItemStack(Material.COMPASS);
@@ -57,12 +43,11 @@ public class JoinListener implements Listener {
         itemMeta.setLore(lore);
         itemMeta.setCustomModelData(Item.COMPASS);
         compass.setItemMeta(itemMeta);
+
         inv.setItem(0, compass);
+        new ActionBarDisplay(p,join_msg);
     }
     public static void tpSpawn(Player p) {
         p.teleport(spawn);
-    }
-    public void saveJoinCounter() {
-        plugin.getConfigMgr().saveJoinCounter(join_counter);
     }
 }

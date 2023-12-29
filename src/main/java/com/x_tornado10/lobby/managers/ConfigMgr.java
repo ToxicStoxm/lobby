@@ -1,4 +1,4 @@
-package com.x_tornado10.lobby.Managers;
+package com.x_tornado10.lobby.managers;
 
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.utils.Paths;
@@ -63,5 +63,12 @@ public class ConfigMgr {
             }
         }
         return temp;
+    }
+    public List<String> getDbCredentials() {
+        List<String> result = new ArrayList<>();
+        result.add(config.getString(Paths.db_host));
+        result.add(config.getString(Paths.db_username));
+        result.add(config.getString(Paths.db_password));
+        return  result;
     }
 }

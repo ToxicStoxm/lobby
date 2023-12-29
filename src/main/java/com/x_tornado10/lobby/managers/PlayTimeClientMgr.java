@@ -1,8 +1,8 @@
-package com.x_tornado10.lobby.Managers;
+package com.x_tornado10.lobby.managers;
 
 import com.x_tornado10.lobby.Lobby;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class PlayTimeClientMgr {
     private final Lobby plugin;
-    private HashMap<UUID, Double> playtime;
+    private final HashMap<UUID, Double> playtime;
     public PlayTimeClientMgr() {
         plugin = Lobby.getInstance();
         playtime = new HashMap<>();
@@ -23,7 +23,7 @@ public class PlayTimeClientMgr {
             public void run() {
                 save();
             }
-        }.runTaskTimer(plugin, 100, 100);
+        }.runTaskTimer(plugin, 0, 100);
     }
     public void updatePlaytime(UUID pid, double seconds) {
         if (playtime.containsKey(pid)) {
@@ -34,8 +34,11 @@ public class PlayTimeClientMgr {
     }
     private void save() {
         for (Map.Entry<UUID, Double> entry : playtime.entrySet()) {
-            ProxiedPlayer p = ProxyServer.getInstance().getPlayer(entry.getKey());
-            plugin.sendCustomData(p, entry.getKey(),entry.getValue(),"playtime");
+            Player p = Bukkit.getPlayer(entry.getKey());
+            if (p != null) {
+                //plugin.sendCustomData(p, entry.getKey(), entry.getValue(), "playtime");
+            }
+            playtime.remove(entry.getKey());
         }
     }
 }
