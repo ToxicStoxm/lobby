@@ -1,50 +1,122 @@
 package com.x_tornado10.lobby.db;
 
-import com.x_tornado10.lobby.Lobby;
+import com.x_tornado10.lobby.playerstats.PlayerStats;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class Database {
+    private final HikariDataSource dataSource;
 
-    private Connection connection;
-    private final Logger logger;
-    private final List<String> credentials;
     public Database(List<String> credentials) {
-        Lobby plugin = Lobby.getInstance();
-        logger = plugin.getLogger();
-        this.credentials = credentials;
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(credentials.get(0));
+        config.setUsername(credentials.get(1));
+        config.setPassword(credentials.get(2));
+        config.setMaximumPoolSize(10);
+
+        this.dataSource = new HikariDataSource(config);
+    }
+
+    public void initialize() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "CREATE TABLE IF NOT EXISTS player_stats (" +
+                "uuid VARCHAR(36) PRIMARY KEY, " +
+                "deaths INT, " +
+                "kills INT, " +
+                "blocks_broken BIGINT, " +
+                "blocks_placed BIGINT, " +
+                "last_login DATE, " +
+                "last_logout DATE, " +
+                "logins INT" +
+                ")";
+        statement.execute(sql);
+        statement.close();
     }
 
     public Connection getConnection() throws SQLException {
-
-        if(connection != null){
-            return connection;
-        }
-
-        String url = credentials.get(0);
-        String user = credentials.get(1);
-        String password = credentials.get(2);
-
-        Connection connection = DriverManager.getConnection(url, user, password);
-
-        this.connection = connection;
-
-        return connection;
+        return dataSource.getConnection();
     }
 
-    public void initializeDatabase() throws SQLException {
+    public void closeConnectionPool() {
+        if (dataSource != null) {
+            dataSource.close();
+        }
+    }
 
-        Statement statement = getConnection().createStatement();
+    public PlayerStats findPlayerStatsByUUID(String uuid) throws SQLException {
 
-        //Create the player_stats table
-        String sql = "CREATE TABLE IF NOT EXISTS player_stats (uuid varchar(36) primary key, deaths int, kills int, blocks_broken long, blocks_placed long, last_login DATE, last_logout DATE, logins int)";
+        PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM player_stats WHERE uuid = ?");
+        statement.setString(1, uuid);
 
-        statement.execute(sql);
+        ResultSet resultSet = statement.executeQuery();
+
+        PlayerStats playerStats;
+
+        if(resultSet.next()){
+
+            playerStats = new PlayerStats(resultSet.getString("uuid"), resultSet.getInt("deaths"), resultSet.getInt("kills"), resultSet.getLong("blocks_broken"), resultSet.getLong("blocks_placed"), resultSet.getDate("last_login"), resultSet.getDate("last_logout"), resultSet.getInt("logins"));
+
+            statement.close();
+
+            return playerStats;
+        }
+
+        statement.close();
+
+        return null;
+    }
+
+    public void createPlayerStats(PlayerStats playerStats) throws SQLException {
+
+        PreparedStatement statement = getConnection()
+                .prepareStatement("INSERT INTO player_stats(uuid, deaths, kills, blocks_broken, blocks_placed, last_login, last_logout, logins) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        statement.setString(1, playerStats.getUuid());
+        statement.setInt(2, playerStats.getDeaths());
+        statement.setInt(3, playerStats.getKills());
+        statement.setLong(4, playerStats.getBlocks_broken());
+        statement.setLong(5, playerStats.getBlocks_placed());
+        statement.setDate(6, new Date(playerStats.getLast_login().getTime()));
+        statement.setDate(7, new Date(playerStats.getLast_logout().getTime()));
+        statement.setInt(8, playerStats.getLogins());
+
+        statement.executeUpdate();
+
+        statement.close();
+
+    }
+
+    public void updatePlayerStats(PlayerStats playerStats) throws SQLException {
+
+        PreparedStatement statement = getConnection().prepareStatement("UPDATE player_stats SET deaths = ?, kills = ?, blocks_broken = ?, blocks_placed = ?, last_login = ?, last_logout = ?, logins = ? WHERE uuid = ?");
+        statement.setInt(1, playerStats.getDeaths());
+        statement.setInt(2, playerStats.getKills());
+        statement.setLong(3, playerStats.getBlocks_broken());
+        statement.setLong(4, playerStats.getBlocks_placed());
+        statement.setDate(5, new Date(playerStats.getLast_login().getTime()));
+        statement.setDate(6, new Date(playerStats.getLast_logout().getTime()));
+        statement.setInt(7, playerStats.getLogins());
+        statement.setString(8, playerStats.getUuid());
+
+        statement.executeUpdate();
+
+        statement.close();
+
+    }
+
+    public void deletePlayerStats(PlayerStats playerStats) throws SQLException {
+
+        PreparedStatement statement = getConnection().prepareStatement("DELETE FROM player_stats WHERE uuid = ?");
+        statement.setString(1, playerStats.getUuid());
+
+        statement.executeUpdate();
 
         statement.close();
 
     }
 
 }
+

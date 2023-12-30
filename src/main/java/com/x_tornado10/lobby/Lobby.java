@@ -3,14 +3,18 @@ package com.x_tornado10.lobby;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.tchristofferson.configupdater.ConfigUpdater;
-import com.x_tornado10.lobby.managers.*;
 import com.x_tornado10.lobby.commands.LobbyCommand;
 import com.x_tornado10.lobby.commands.LobbyCommandDisabled;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.CompassListener;
 import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
+import com.x_tornado10.lobby.listeners.PlayerStatsListener;
+import com.x_tornado10.lobby.managers.ConfigMgr;
+import com.x_tornado10.lobby.managers.LobbyCompass;
 import com.x_tornado10.lobby.utils.Paths;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
@@ -40,15 +44,15 @@ public final class Lobby extends JavaPlugin {
         return configMgr;
     }
     private JoinListener joinListener;
-    private PlayTimeMainMgr playTimeMainMgr;
-    private PlayTimeClientMgr playTimeClientMgr;
     private Database database;
     private Connection connection;
     private Logger logger;
+    private LuckPerms lpAPI;
 
-    public PlayTimeClientMgr getPlayTimeClientMgr() {
-        return playTimeClientMgr;
+    public LuckPerms getLpAPI() {
+        return lpAPI;
     }
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -77,7 +81,7 @@ public final class Lobby extends JavaPlugin {
             return;
         }
         try {
-            database.initializeDatabase();
+            database.initialize();
             logger.info("Successfully initialized database.");
         } catch (SQLException e) {
             logger.severe("Couldn't initialize database! Disabling plugin!");
@@ -89,7 +93,7 @@ public final class Lobby extends JavaPlugin {
         isLobby = configMgr.isLobby();
         joinListener = new JoinListener(configMgr.spawn(), configMgr.joinMsg());
         if (isLobby) {
-            //playTimeMainMgr = new PlayTimeMainMgr();
+            lpAPI = LuckPermsProvider.get();
             Bukkit.getPluginManager().registerEvents(joinListener, this);
             Bukkit.getPluginManager().registerEvents(new LobbyListener(configMgr.isBuildMode()), this);
             PluginCommand lobby = Bukkit.getPluginCommand("lobby");
@@ -97,14 +101,12 @@ public final class Lobby extends JavaPlugin {
                 lobby.setExecutor(new LobbyCommandDisabled());
             }
         } else {
-            //playTimeClientMgr = new PlayTimeClientMgr();
-            //PlayTimeListener playTimeListener = new PlayTimeListener();
-            //Bukkit.getPluginManager().registerEvents(playTimeListener, this);
             PluginCommand lobby = Bukkit.getPluginCommand("lobby");
             if (lobby != null) {
                 lobby.setExecutor(new LobbyCommand());
             }
         }
+        Bukkit.getPluginManager().registerEvents(new PlayerStatsListener(), this);
         Bukkit.getPluginManager().registerEvents(new CompassListener(), this);
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
@@ -112,8 +114,12 @@ public final class Lobby extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        if (database != null) {
+            database.closeConnectionPool();
+        } else {
+            logger.severe("Couldn't close connection to database.");
+        }
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
-        //joinListener.saveJoinCounter();
     }
 
     public void sendPlayerToServer(Player player, String serverName) {
@@ -121,5 +127,13 @@ public final class Lobby extends JavaPlugin {
         out.writeUTF("Connect");
         out.writeUTF(serverName);
         player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }

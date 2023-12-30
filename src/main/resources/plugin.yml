@@ -10,3 +10,5 @@ commands:
       - l
       - hub
     description: teleports you to the lobby
+depend:
+  - LuckPerms

@@ -2,6 +2,9 @@ package com.x_tornado10.lobby.listeners;
 
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.utils.Item;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -30,31 +33,35 @@ public class LobbyListener implements Listener {
     }
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        if (!buildMode) e.setCancelled(true);
+        if (!buildMode && checkBuilder(e.getPlayer())) e.setCancelled(true);
     }
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (!buildMode) e.setCancelled(true);
+        if (!buildMode && checkBuilder(e.getPlayer())) e.setCancelled(true);
     }
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
-        if (!buildMode) e.setCancelled(true);
+        if (e.getEntity() instanceof Player p) {
+        if (!buildMode && checkBuilder(p)) e.setCancelled(true);
+        } else e.setCancelled(true);
     }
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
-        if (!buildMode) e.setCancelled(true);
+        if (e.getEntity() instanceof Player p) {
+            if (!buildMode && checkBuilder(p)) e.setCancelled(true);
+        } else e.setCancelled(true);
     }
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         Location loc = p.getLocation();
-        if (loc.getY()>=200 && !buildMode) e.setCancelled(true);
-        if (loc.getY()<=-50 && !buildMode) JoinListener.tpSpawn(p);
+        if (loc.getY()>=200 && !buildMode && checkBuilder(p)) e.setCancelled(true);
+        if (loc.getY()<=-50 && !buildMode && checkBuilder(p)) JoinListener.tpSpawn(p);
         p.setFoodLevel(20);
     }
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        if (!buildMode) {
+        if (!buildMode && checkBuilder(e.getEntity())) {
             Player p = e.getEntity();
             e.setDeathMessage("");
             e.setKeepLevel(true);
@@ -66,7 +73,7 @@ public class LobbyListener implements Listener {
     }
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent e) {
-        if (!buildMode) e.setCancelled(true);
+        if (!buildMode && checkBuilder((Player) e.getWhoClicked())) e.setCancelled(true);
     }
     @EventHandler
     public void onInventoryItemMove(InventoryMoveItemEvent e) {
@@ -108,16 +115,16 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         if (e.getRightClicked().getType().equals(EntityType.ITEM_FRAME)) {
-            if (!buildMode) e.setCancelled(true);
+            if (!buildMode && checkBuilder(e.getPlayer())) e.setCancelled(true);
         }
     }
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent e) {
-        if (!buildMode) e.setCancelled(true);
+        if (!buildMode && checkBuilder(e.getPlayer())) e.setCancelled(true);
     }
     @EventHandler
     public void onSignChange(SignChangeEvent e) {
-        if (!buildMode) e.setCancelled(true);
+        if (!buildMode && checkBuilder(e.getPlayer())) e.setCancelled(true);
     }
     @EventHandler
     public void onExplosion(BlockExplodeEvent e) {
@@ -128,5 +135,13 @@ public class LobbyListener implements Listener {
         if (e.getBlock().getType().equals(Material.SNOW) || e.getBlock().getType().equals(Material.SNOW_BLOCK)) {
             e.setCancelled(true);
         }
+    }
+    private boolean checkBuilder(Player p) {
+        Lobby plugin = Lobby.getInstance();
+        LuckPerms lpAPI = plugin.getLpAPI();
+        if (lpAPI == null) lpAPI = LuckPermsProvider.get();
+        User usr = lpAPI.getUserManager().getUser(p.getUniqueId());
+        if (usr == null) return true;
+        return !usr.getCachedData().getPermissionData().checkPermission("lobby.builder").asBoolean();
     }
 }
