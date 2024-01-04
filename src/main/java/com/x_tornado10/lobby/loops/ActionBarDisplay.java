@@ -5,8 +5,6 @@ import com.x_tornado10.lobby.Lobby;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -33,7 +31,7 @@ public class ActionBarDisplay {
                 }
                 refreshActionBar();
             }
-        }.runTaskTimer(plugin, 0,10);
+        }.runTaskTimer(plugin, 0,1);
     }
     private void refreshActionBar() {
         Date currentDate = new Date();
@@ -41,10 +39,7 @@ public class ActionBarDisplay {
         SimpleDateFormat dateFormat0 = new SimpleDateFormat("HH:mm");
         String formattedDate = dateFormat.format(currentDate);
         String formattedTime = dateFormat0.format(currentDate);
-        TextComponent comp = new TextComponent(formattedDate + " | " + formattedTime + " [CET]");
-        comp.setColor(ChatColor.GRAY);
-        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, comp);
-
+        send(formattedDate + " | " + formattedTime + " [CET]");
     }
     private void welcomeMessage() {
         new BukkitRunnable() {
@@ -56,11 +51,16 @@ public class ActionBarDisplay {
                     cancel();
                     loop();
                 }
-                TextComponent comp =  new TextComponent(join_msg.getText().replace("%PLAYER%", p.getName()));
-                comp.setColor(ChatColor.GRAY);
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, comp);
+                send(join_msg.getText().replace("%PLAYER%", p.getName()));
                 i++;
             }
         }.runTaskTimer(Lobby.getInstance(), 0,20);
     }
+    private void send(String s) {
+        TextComponent comp = new TextComponent(prio_message.isEmpty() ? s : prio_message);
+        comp.setColor(prio_color == null ? ChatColor.GRAY : prio_color);
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, comp);
+    }
+    public String prio_message = "";
+    public ChatColor prio_color;
 }

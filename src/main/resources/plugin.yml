@@ -12,3 +12,10 @@ commands:
     description: teleports you to the lobby
 depend:
   - LuckPerms
+permissions:
+  lobby.builder:
+    description: builder
+  lobby.cs+:
+    description: CS+ rank
+  lobby.csp:
+    description: CSP rank

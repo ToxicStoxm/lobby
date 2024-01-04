@@ -7,6 +7,16 @@ Spawn:
   Z: 0.5
   yaw: 180
   pitch: 0
+Door:
+  World: world
+  1:
+    X: 20.0
+    Y: 1.0
+    Z: -2.0
+  2:
+    X: 20.0
+    Y: 3.0
+    Z: 2.0
 Join-Message:
   Actionbar: "Welcome back %PLAYER%"
 Database:
