@@ -1,9 +1,9 @@
 package com.x_tornado10.lobby.utils;
 
+import io.r2dbc.spi.Parameter;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -14,6 +14,7 @@ public class Item {
     public static List<Integer> BOUNDS53 = null;
     public static List<Integer> BOUNDS26 = null;
     public static List<Integer> BOUNDS44 = null;
+    public static List<Integer> STATS = null;
     private static void addToBounds53(int from, int to) {
         for (int i = from; i<=to; i++) {
             BOUNDS53.add(i);
@@ -27,6 +28,11 @@ public class Item {
     private static void addToBounds26(int from, int to) {
         for (int i = from; i<=to; i++) {
             BOUNDS26.add(i);
+        }
+    }
+    private static void addToSTATS(int from, int to) {
+        for (int i = from; i<=to; i++) {
+            STATS.add(i);
         }
     }
     public static void initialize() {
@@ -46,10 +52,13 @@ public class Item {
         addToBounds44(17,18);
         addToBounds44(26,27);
         addToBounds44(35,44);
+        STATS = new ArrayList<>();
+        addToSTATS(12,15);
     }
     public static ItemStack BOUNDS() {
         return ItemCreator.of(CompMaterial.BLACK_STAINED_GLASS_PANE).name(" ").make();
     }
+
     public final static int LOBBYCOMPASS = 42;
     public final static int CRAFTISERVI = 43;
     public final static int LOBBY = 44;

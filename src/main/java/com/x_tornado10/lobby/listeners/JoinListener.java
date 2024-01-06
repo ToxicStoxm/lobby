@@ -38,7 +38,7 @@ public class JoinListener implements Listener {
         p.setTotalExperience(0);
         p.setLevel(0);
         p.setGameMode(GameMode.ADVENTURE);
-
+        if (plugin.checkGroup(p, "csp") || plugin.checkGroup(p, "cs+")) p.setAllowFlight(true);
         inv(p);
         displays.put(p.getUniqueId(), new ActionBarDisplay(p,join_msg));
     }

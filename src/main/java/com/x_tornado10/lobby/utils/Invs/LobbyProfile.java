@@ -1,5 +1,7 @@
 package com.x_tornado10.lobby.utils.Invs;
 
+import com.x_tornado10.lobby.Lobby;
+import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,6 +15,8 @@ import org.mineacademy.fo.menu.button.annotation.Position;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
 
+import java.util.List;
+
 public class LobbyProfile extends Menu {
     @Position(21)
     private final Button openStatsbutton;
@@ -20,7 +24,7 @@ public class LobbyProfile extends Menu {
     private final ButtonMenu openMilestonesButton;
 
     public LobbyProfile() {
-        setTitle(ChatColor.DARK_GRAY + "Server Profile");
+        setTitle(ChatColor.DARK_GRAY + "My Profile");
         setSize(9 * 5);
 
         this.openStatsbutton = new Button() {
@@ -93,6 +97,15 @@ public class LobbyProfile extends Menu {
                     setItem(i, Item.BOUNDS());
                 } else if (getParent() == null) {
                     setItem(i, Item.BOUNDS());
+                }
+            }
+            List<ItemStack> items = Lobby.getInstance().getItemGetter().getStats(viewer);
+            if (items != null) {
+                List<Integer> slots = Item.STATS;
+                int i = 0;
+                for (ItemStack item : items) {
+                    setItem(slots.get(i), item);
+                    i++;
                 }
             }
             setItem(10,ItemCreator.of(CompMaterial.PLAYER_HEAD)

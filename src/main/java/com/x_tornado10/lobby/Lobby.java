@@ -10,6 +10,7 @@ import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
 import com.x_tornado10.lobby.listeners.PlayerStatsListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
+import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Paths;
 import lombok.Getter;
@@ -20,11 +21,14 @@ import net.luckperms.api.model.group.GroupManager;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.query.QueryOptions;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
+import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -50,11 +54,11 @@ public final class Lobby extends SimplePlugin {
     private JoinListener joinListener;
     @Getter
     private Database database;
-    @Getter
-    private Connection connection;
     private Logger logger;
     @Getter
     private LuckPerms lpAPI;
+    @Getter
+    private ItemGetter itemGetter;
 
     @Override
     protected void onPluginLoad() {
@@ -91,9 +95,10 @@ public final class Lobby extends SimplePlugin {
         }
 
         Menu.setSound(null);
-        ButtonReturnBack.setMaterial(CompMaterial.RED_STAINED_GLASS_PANE);
+        ButtonReturnBack.setItemStack(ItemCreator.of(CompMaterial.RED_STAINED_GLASS_PANE).name(ChatColor.RED + "Go Back").lore(ChatColor.GRAY + "To my Profile").make());
 
         isLobby = configMgr.isLobby();
+        itemGetter = new ItemGetter();
         joinListener = new JoinListener(configMgr.spawn(), configMgr.joinMsg());
         if (isLobby) {
             lpAPI = LuckPermsProvider.get();

@@ -16,7 +16,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
@@ -31,7 +30,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.mineacademy.fo.event.SimpleListener;
 
 import java.util.*;
 import java.util.List;
@@ -45,7 +43,7 @@ public class LobbyListener implements Listener{
     private boolean doorOpening = false;
     private boolean doorOpen = false;
     private boolean doorClosing = false;
-    private HashMap<UUID, Long> cooldown;
+    private final HashMap<UUID, Long> cooldown;
 
     public LobbyListener(boolean buildMode, List<Location> door) {
         this.buildMode = buildMode;
@@ -65,6 +63,11 @@ public class LobbyListener implements Listener{
             }
         }
         cooldown = new HashMap<>();
+    }
+    @EventHandler
+    public void onItemMove(InventoryMoveItemEvent e) {
+        Player p = (Player) e.getInitiator().getViewers().get(0);
+        if (!buildMode && isNotBuilder(p)) e.setCancelled(true);
     }
 
 
@@ -98,7 +101,11 @@ public class LobbyListener implements Listener{
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         Location loc = p.getLocation();
-        if (loc.getY() >= 200 && !buildMode && isNotBuilder(p)) e.setCancelled(true);
+        if (loc.getY() >= 200 && !buildMode && isNotBuilder(p)) {
+            if (!(e.getFrom().getY() >= 200)) e.setCancelled(true);
+            loc.setY(199);
+            p.teleport(loc);
+        }
         if (loc.getY() <= -50 && !buildMode && isNotBuilder(p)) JoinListener.tpSpawn(p);
         p.setFoodLevel(20);
 
@@ -140,29 +147,24 @@ public class LobbyListener implements Listener{
             if (isInPredefinedArea(p.getLocation())) {
                 if (cooldown.containsKey(p.getUniqueId())) {
                     if (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 500) {
-                        cooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                        p.setVelocity(new Vector(e.getFrom().getX() - 1000, 0.2, 0).normalize());
-                        p.sendMessage(ChatColor.RED + "Too low rank to enter!");
-                        BaseComponent[] component = new ComponentBuilder(ChatColor.AQUA + "Buy ranks ")
-                                .append(String.valueOf(ChatColor.AQUA) + ChatColor.UNDERLINE.asBungee() + "here" + ChatColor.RESET)
-                                .event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://crafti-servi.com//plugin-resources/craftiservi/Final_Chart.png"))
-                                .append(ChatColor.AQUA + "!")
-                                .create();
-                        p.spigot().sendMessage(component);
+                        preventPlayer(p, e.getFrom());
                     }
                 } else {
-                    cooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                    p.setVelocity(new Vector(e.getFrom().getX() - 1000, e.getFrom().getY() + 2, 0).normalize());
-                    p.sendMessage(ChatColor.RED + "Too low rank to enter!");
-                    BaseComponent[] component = new ComponentBuilder(ChatColor.AQUA + "Buy ranks ")
-                            .append(String.valueOf(ChatColor.AQUA) + ChatColor.UNDERLINE.asBungee() + "here" + ChatColor.RESET)
-                            .event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://crafti-servi.com//plugin-resources/craftiservi/Final_Chart.png"))
-                            .append(ChatColor.AQUA + "!")
-                            .create();
-                    p.spigot().sendMessage(component);
+                    preventPlayer(p, e.getFrom());
                 }
             }
         }
+    }
+    private void preventPlayer(Player p, Location loc) {
+        cooldown.put(p.getUniqueId(), System.currentTimeMillis());
+        p.setVelocity(new Vector(loc.getX() - 1000, loc.getY() + 2, 0).normalize());
+        p.sendMessage(ChatColor.RED + "You are not allowed to enter this area!");
+        BaseComponent[] component = new ComponentBuilder(ChatColor.AQUA + "Buy ranks ")
+                .append(String.valueOf(ChatColor.AQUA) + ChatColor.UNDERLINE.asBungee() + "here" + ChatColor.RESET)
+                .event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://crafti-servi.com//plugin-resources/craftiservi/Final_Chart.png"))
+                .append(ChatColor.AQUA + "!")
+                .create();
+        p.spigot().sendMessage(component);
     }
     private boolean tryCloseDoor(World w) {
         if (!doorOpen || doorClosing) return false;
@@ -272,15 +274,17 @@ public class LobbyListener implements Listener{
             p.spigot().respawn();
         }
     }
-
-
-
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
         if (!buildMode && isNotBuilder(p)) {
             if (e.getClickedInventory() == null) return;
             ItemStack i = e.getClickedInventory().getItem(e.getSlot());
+            if (i == null) {
+                if (e.getClick().isKeyboardClick()) {
+                    i = p.getInventory().getItem(e.getHotbarButton());
+                }
+            }
             if (i == null) return;
             ItemMeta meta = i.getItemMeta();
             if (meta == null) return;
@@ -290,13 +294,6 @@ public class LobbyListener implements Listener{
             }
         }
     }
-    /*
-    @EventHandler
-    public void onInventoryItemMove(InventoryMoveItemEvent e) {
-        e.getInitiator().getViewers().get(0).sendMessage("InventoryMoveItemEvent");
-        if (!buildMode) e.setCancelled(true);
-    }
-     */
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
@@ -332,20 +329,10 @@ public class LobbyListener implements Listener{
             }
         }
     }
-    @EventHandler
-    public void onClose(InventoryCloseEvent e) {
-        e.getPlayer().sendMessage("NUTTE");
-    }
-    @EventHandler
-    public void onDrop(PlayerDropItemEvent e) {
-        e.getPlayer().sendMessage("testDrop");
-        e.setCancelled(true);
-    }
 
     private boolean isValidAction(Action action) {
         return action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK);
     }
-    /*
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
@@ -416,7 +403,6 @@ public class LobbyListener implements Listener{
             e.setCancelled(true);
         }
     }
-     */
     private boolean isNotBuilder(Player p) {
         Lobby plugin = Lobby.getInstance();
         return !plugin.checkGroup(p, "builder");
