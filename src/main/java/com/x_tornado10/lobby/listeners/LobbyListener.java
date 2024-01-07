@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -28,6 +29,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.FlowerPot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -302,8 +304,8 @@ public class LobbyListener implements Listener{
             if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
                 Block clickedBlock = e.getClickedBlock();
                 if (clickedBlock != null && action == Action.RIGHT_CLICK_BLOCK) {
-                    if (clickedBlock.getType().toString().contains("TRAPDOOR")) {
-                        e.setCancelled(true);
+                    if (clickedBlock.getType().toString().contains("TRAPDOOR") || clickedBlock.getType().equals(Material.FLOWER_POT) || clickedBlock.getType().equals(Material.COMPOSTER) || clickedBlock.getType().name().startsWith("POTTED_")) {
+                        if (!buildMode && isNotBuilder(p)) e.setCancelled(true);
                     }
                 }
             }
@@ -319,7 +321,7 @@ public class LobbyListener implements Listener{
                             }
                             case Item.LOBBYHEAD -> {
                                 if (!p.getOpenInventory().getType().equals(InventoryType.CHEST)) {
-                                    new LobbyProfile().displayTo(p);
+                                    new LobbyProfile(p).displayTo(p);
                                     e.setCancelled(true);
                                 }
                             }
