@@ -10,6 +10,7 @@ import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
 import com.x_tornado10.lobby.listeners.PlayerStatsListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
+import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Paths;
@@ -25,6 +26,7 @@ import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
@@ -59,6 +61,8 @@ public final class Lobby extends SimplePlugin {
     private LuckPerms lpAPI;
     @Getter
     private ItemGetter itemGetter;
+    @Getter
+    private MilestoneMgr milestonesMgr;
 
     @Override
     protected void onPluginLoad() {
@@ -84,6 +88,7 @@ public final class Lobby extends SimplePlugin {
         Item.initialize();
         configMgr = new ConfigMgr();
         database = new Database(configMgr.getDbCredentials());
+        milestonesMgr = new MilestoneMgr();
 
         try {
             database.initialize();

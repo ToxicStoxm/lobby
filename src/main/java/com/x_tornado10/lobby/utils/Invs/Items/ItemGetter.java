@@ -90,7 +90,7 @@ public class ItemGetter {
         result.add(MILESTONE_1_LOCKED());
         result.add(MILESTONE_4_LOCKED());
         result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_6_LOCKED());
+        result.add(MILESTONE_5_LOCKED());
         result.add(MILESTONE_8_LOCKED());
         result.add(MILESTONE_PATH_LOCKED());
         result.add(MILESTONE_PATH_LOCKED());
@@ -103,7 +103,7 @@ public class ItemGetter {
         result.add(MILESTONE_2_LOCKED());
         result.add(MILESTONE_PATH_LOCKED());
         result.add(MILESTONE_3_LOCKED());
-        result.add(MILESTONE_5_LOCKED());
+        result.add(MILESTONE_6_LOCKED());
         result.add(MILESTONE_PATH_LOCKED());
         result.add(MILESTONE_7_LOCKED());
         return result;
