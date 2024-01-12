@@ -2,8 +2,20 @@ package com.x_tornado10.lobby.listeners;
 
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.db.Database;
+import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
+import com.x_tornado10.lobby.utils.custom.data.Milestone;
+import com.x_tornado10.lobby.utils.statics.Convertor;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.group.GroupManager;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.model.user.UserManager;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.PrefixNode;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,14 +27,13 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public class PlayerStatsListener implements Listener {
@@ -31,11 +42,15 @@ public class PlayerStatsListener implements Listener {
     private final Logger logger;
     private final HashMap<UUID, Date> last_update;
     private final Lobby plugin;
+    private final MilestoneMgr milestoneMgr;
+    private final LuckPerms lpAPI;
     public PlayerStatsListener() {
         plugin = Lobby.getInstance();
         database = plugin.getDatabase();
         logger = plugin.getLogger();
         last_update = new HashMap<>();
+        milestoneMgr = plugin.getMilestonesMgr();
+        lpAPI = plugin.getLpAPI();
         updateLoop();
     }
     public PlayerStats getPlayerStatsFromDatabase(Player player) throws SQLException {
@@ -88,7 +103,10 @@ public class PlayerStatsListener implements Listener {
                     if (Bukkit.getPlayer(entry.getKey()) != null) {
                         try {
                             PlayerStats playerStats = getPlayerStatsFromDatabase(entry.getKey());
-                            playerStats.setPlaytime(playerStats.getPlaytime() + System.currentTimeMillis() - entry.getValue().getTime());
+                            long d = playerStats.getPlaytime() + System.currentTimeMillis() - last_update.get(entry.getKey()).getTime();
+                            playerStats.setPlaytime(d);
+                            Player p = Bukkit.getPlayer(entry.getKey());
+                            displayMilestone(p, checkMilestones(d,p));
                             last_update.put(entry.getKey(), new Date());
                             database.updatePlayerStats(playerStats);
                         } catch (SQLException e) {
@@ -105,7 +123,8 @@ public class PlayerStatsListener implements Listener {
         Player p = e.getPlayer();
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(p);
-            playerStats.setPlaytime(playerStats.getPlaytime() + System.currentTimeMillis() - last_update.get(p.getUniqueId()).getTime());
+            long d = playerStats.getPlaytime() + System.currentTimeMillis() - last_update.get(p.getUniqueId()).getTime();
+            playerStats.setPlaytime(d);
             last_update.remove(p.getUniqueId());
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
@@ -194,4 +213,76 @@ public class PlayerStatsListener implements Listener {
             ex.printStackTrace();
         }
     }
+    private Milestone checkMilestones(double playtime, Player p) {
+        Milestone m = milestoneMgr.getMilestone(playtime);
+        if (m == null) return null;
+        UserManager mgr = lpAPI.getUserManager();
+        GroupManager gmgr = lpAPI.getGroupManager();
+        User usr = mgr.getUser(p.getUniqueId());
+        if (usr == null) return null;
+        for (PrefixNode node :  Objects.requireNonNull(gmgr.getGroup(usr.getPrimaryGroup())).getNodes(NodeType.PREFIX)) {
+            if (Convertor.containsHexCode(node.getMetaValue())) {
+                String currentHex = Convertor.extractHexCode(node.getMetaValue());
+                if (currentHex != null) {
+                    if (!currentHex.equals(m.color())) {
+                        boolean granted = false;
+                        for (PrefixNode node0 : usr.getNodes(NodeType.PREFIX)) {
+                            if (Convertor.containsHexCode(node0.getMetaValue())) {
+                                String currentHex0 = Convertor.extractHexCode(node0.getMetaValue());
+                                if (currentHex0 != null && currentHex0.equals(m.color())) {
+                                    granted = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!granted) {
+                            for (Node n : usr.getNodes()) {
+                                if (n.getType() == NodeType.PREFIX) {
+                                    usr.data().remove(n);
+                                }
+                            }
+                            usr.data().add(PrefixNode.builder(Convertor.replaceHexCodes(node.getMetaValue(), m.color()), 5).build());
+                            mgr.saveUser(usr);
+                            return m;
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+            }
+
+        }
+        return null;
+    }
+    private boolean displayMilestone(Player p, @Nullable Milestone m) {
+        if (m == null) return false;
+        String title = m.title();
+        String subtitle = m.subtitle();
+        String color = m.color();
+        String sub_color = Convertor.darkenHexColor(color, Convertor.DEFAULT);
+
+        p.sendTitle(ChatColor.of(color) + title, ChatColor.of(sub_color) + subtitle, Convertor.TITLE_FADEIN, Convertor.TITLE_STAY, Convertor.TITLE_FADEOUT);
+        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 999999999,1);
+        return true;
+    }
+    public void updatePrefix(Player p) {
+        UserManager mgr = lpAPI.getUserManager();
+        GroupManager gmgr = lpAPI.getGroupManager();
+        User usr = mgr.getUser(p.getUniqueId());
+        if (usr == null) return;
+        for (PrefixNode node0 : usr.getNodes(NodeType.PREFIX)) {
+            for (PrefixNode node : Objects.requireNonNull(gmgr.getGroup(usr.getPrimaryGroup())).getNodes(NodeType.PREFIX)) {
+                if (Convertor.containsHexCode(node0.getMetaValue())) {
+                    String color = Convertor.extractHexCode(node0.getMetaValue());
+                    for (Node n : usr.getNodes()) {
+                        if (n.getType() == NodeType.PREFIX) {
+                            usr.data().remove(n);
+                        }
+                    }
+                    usr.data().add(PrefixNode.builder(Convertor.replaceHexCodes(node.getMetaValue(), color), 5).build());
+                }
+            }
+        }
+    }
+
 }

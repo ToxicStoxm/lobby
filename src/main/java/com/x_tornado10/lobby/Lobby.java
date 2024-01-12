@@ -3,6 +3,8 @@ package com.x_tornado10.lobby;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.tchristofferson.configupdater.ConfigUpdater;
+import com.x_tornado10.lobby.commands.GrantRankCommand;
+import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
 import com.x_tornado10.lobby.commands.LobbyCommand;
 import com.x_tornado10.lobby.commands.LobbyCommandDisabled;
 import com.x_tornado10.lobby.db.Database;
@@ -21,12 +23,12 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.group.GroupManager;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.query.QueryOptions;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
@@ -36,9 +38,9 @@ import org.mineacademy.fo.remain.CompMaterial;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -63,6 +65,7 @@ public final class Lobby extends SimplePlugin {
     private ItemGetter itemGetter;
     @Getter
     private MilestoneMgr milestonesMgr;
+    private PlayerStatsListener playerStatsListener;
 
     @Override
     protected void onPluginLoad() {
@@ -88,15 +91,21 @@ public final class Lobby extends SimplePlugin {
         Item.initialize();
         configMgr = new ConfigMgr();
         database = new Database(configMgr.getDbCredentials());
-        milestonesMgr = new MilestoneMgr();
 
         try {
             database.initialize();
             logger.info("Successfully initialized database.");
         } catch (SQLException e) {
             logger.severe("Couldn't initialize database! Disabling plugin!");
+            logger.severe(e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
             return;
+        }
+        try {
+            milestonesMgr = new MilestoneMgr();
+        } catch (NullPointerException e) {
+            logger.severe(e.getMessage());
+            logger.severe("Wasn't able to get milestones from 'milestones.yml' please check your syntax!");
         }
 
         Menu.setSound(null);
@@ -105,6 +114,11 @@ public final class Lobby extends SimplePlugin {
         isLobby = configMgr.isLobby();
         itemGetter = new ItemGetter();
         joinListener = new JoinListener(configMgr.spawn(), configMgr.joinMsg());
+        PluginCommand grantRank = Bukkit.getPluginCommand("setrank");
+        if (grantRank != null) {
+            grantRank.setExecutor(new GrantRankCommand());
+            grantRank.setTabCompleter(new GrantRankCommandTabCompletor());
+        }
         if (isLobby) {
             lpAPI = LuckPermsProvider.get();
             Bukkit.getPluginManager().registerEvents(joinListener, this);
@@ -119,7 +133,8 @@ public final class Lobby extends SimplePlugin {
                 lobby.setExecutor(new LobbyCommand());
             }
         }
-        Bukkit.getPluginManager().registerEvents(new PlayerStatsListener(), this);
+        playerStatsListener = new PlayerStatsListener();
+        Bukkit.getPluginManager().registerEvents(playerStatsListener, this);
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
@@ -151,5 +166,22 @@ public final class Lobby extends SimplePlugin {
         if (!gm.isLoaded(groupName)) gm.loadGroup(groupName);
         Group group = gm.getGroup(groupName);
         return usr.getInheritedGroups(QueryOptions.defaultContextualOptions()).contains(group);
+    }
+    public void setPlayerGroup(Player p, String groupName) {
+        UserManager userManager = lpAPI.getUserManager();
+        User user = userManager.getUser(p.getUniqueId());
+        if (user == null) return;
+        GroupManager groupManager = lpAPI.getGroupManager();
+        Group group = groupManager.getGroup(groupName);
+        if (group == null) return;
+        for (InheritanceNode node : user.getNodes(NodeType.INHERITANCE)) {
+            user.data().remove(node);
+        }
+        InheritanceNode inheritanceNode = InheritanceNode.builder(group).build();
+        user.data().add(inheritanceNode);
+        user.setPrimaryGroup(groupName);
+        playerStatsListener.updatePrefix(p);
+        userManager.saveUser(user);
+        lpAPI.runUpdateTask();
     }
 }

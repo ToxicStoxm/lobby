@@ -1,6 +1,7 @@
 package com.x_tornado10.lobby.db;
 
 import com.x_tornado10.lobby.playerstats.PlayerStats;
+import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.mineacademy.fo.database.SimpleDatabase;
@@ -34,9 +35,19 @@ public class Database extends SimpleDatabase {
                 "chat_messages_send BIGINT," +
                 "playtime BIGINT" +
                 ")";
+        String sql1 = "CREATE TABLE IF NOT EXISTS milestones (" +
+                "id INT PRIMARY KEY, " +
+                "title VARCHAR(255), " +
+                "subtitle VARCHAR(255), " +
+                "color VARCHAR(255), " +
+                "playtime DOUBLE" +
+                ")";
         PreparedStatement statement = prepareStatement(sql);
-        statement.execute(sql);
+        PreparedStatement statement1 = prepareStatement(sql1);
+        statement.execute();
+        statement1.execute();
         statement.close();
+        statement1.close();
     }
 
     public PlayerStats findPlayerStatsByUUID(String uuid) throws SQLException {
@@ -107,10 +118,38 @@ public class Database extends SimpleDatabase {
         statement.setString(11, playerStats.getUuid());
 
         statement.executeUpdate();
-
         statement.close();
 
     }
+    public void setMileStones(Milestone[] milestones) throws SQLException {
+        PreparedStatement del = prepareStatement("DELETE FROM milestones");
+        del.execute();
+        del.close();
+        PreparedStatement statement = prepareStatement("INSERT INTO milestones(id, title, subtitle, color, playtime) VALUES (?, ?, ?, ?, ?)");
+        for (Milestone m : milestones) {
+            statement.setInt(1, m.id());
+            statement.setString(2, m.title());
+            statement.setString(3, m.subtitle());
+            statement.setString(4, m.color());
+            statement.setDouble(5, m.playtime());
+            statement.executeUpdate();
+        }
+        statement.close();
+    }
+    /*
+    public void updateMileStones(Milestone[] milestones) throws SQLException {
+        PreparedStatement statement = prepareStatement("UPDATE milestones SET title = ?, subtitle = ?, color = ?, playtime = ? WHERE id = ?");
+        for (Milestone m : milestones) {
+            statement.setString(1, m.title());
+            statement.setString(2, m.subtitle());
+            statement.setString(3, m.color());
+            statement.setDouble(4, m.playtime());
+            statement.setInt(5, m.id());
+            statement.executeUpdate();
+        }
+        statement.close();
+    }
+     */
 
     public void deletePlayerStats(PlayerStats playerStats) throws SQLException {
         PreparedStatement statement = prepareStatement("DELETE FROM player_stats WHERE uuid = ?");
