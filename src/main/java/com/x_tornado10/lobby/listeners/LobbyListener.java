@@ -67,6 +67,7 @@ public class LobbyListener implements Listener{
     @EventHandler
     public void onItemMove(InventoryMoveItemEvent e) {
         Player p = (Player) e.getInitiator().getViewers().get(0);
+        if (p == null) return;
         if (isNotBuilder(p)) e.setCancelled(true);
     }
 

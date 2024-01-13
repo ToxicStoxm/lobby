@@ -36,14 +36,10 @@ public class LobbyCompass extends Menu {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
                 if (!clickType.isRightClick() && !clickType.isLeftClick()) return;
-                if (Lobby.isLobby) {
-                    player.sendMessage(ChatColor.RED + "You are already connected to Lobby!");
-                    Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
-                    menu.handleClose(currentChestInventory);
-                    player.closeInventory();
-                } else {
-                   plugin.sendPlayerToServer(player, Server.Lobby);
-                }
+                player.sendMessage(ChatColor.RED + "You are already connected to Lobby!");
+                Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
+                menu.handleClose(currentChestInventory);
+                player.closeInventory();
             }
 
             @Override

@@ -45,7 +45,7 @@ public class JoinListener implements Listener {
 
     private void inv(Player p) {
         Inventory inv = p.getInventory();
-        if (!plugin.getConfigMgr().isBuildMode() && !plugin.hasPermission(p, Perms.builder)) inv.clear();
+        if (!plugin.hasPermission(p, Perms.builder)) inv.clear();
         inv.setItem(0, getCompass());
         inv.setItem(1, getHead(p));
     }
