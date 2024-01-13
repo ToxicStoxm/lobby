@@ -38,7 +38,6 @@ public class MilestoneMgr {
             String subtitle = milestone.getString("Subtitle");
             String color = milestone.getString("Color");
             double playtime = milestone.getDouble("Playtime");
-            plugin.getLogger().severe("MILESTONE #" + id + " | " + title + " | " + subtitle + " | " + color + " | " + playtime + " |");
             milestones.add(new Milestone(id, title, subtitle, color, playtime));
         }
         final boolean[] err = {false};
