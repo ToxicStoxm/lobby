@@ -33,7 +33,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public class PlayerStatsListener implements Listener {
@@ -131,16 +130,6 @@ public class PlayerStatsListener implements Listener {
             logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
         }
-    }
-    public static String convertSeconds(int seconds) {
-        int days = seconds / (24 * 3600);
-        seconds %= (24 * 3600);
-        int hours = seconds / 3600;
-        seconds %= 3600;
-        int minutes = seconds / 60;
-        seconds %= 60;
-
-        return String.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds);
     }
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
@@ -253,8 +242,8 @@ public class PlayerStatsListener implements Listener {
         }
         return null;
     }
-    private boolean displayMilestone(Player p, @Nullable Milestone m) {
-        if (m == null) return false;
+    private void displayMilestone(Player p, @Nullable Milestone m) {
+        if (m == null) return;
         String title = m.title();
         String subtitle = m.subtitle();
         String color = m.color();
@@ -262,7 +251,6 @@ public class PlayerStatsListener implements Listener {
 
         p.sendTitle(ChatColor.of(color) + title, ChatColor.of(sub_color) + subtitle, Convertor.TITLE_FADEIN, Convertor.TITLE_STAY, Convertor.TITLE_FADEOUT);
         p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 999999999,1);
-        return true;
     }
     public void updatePrefix(Player p) {
         UserManager mgr = lpAPI.getUserManager();
