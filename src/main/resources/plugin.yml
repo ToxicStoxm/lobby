@@ -10,5 +10,17 @@ commands:
       - l
       - hub
     description: teleports you to the lobby
+  setrank:
+    aliases:
+      - rank
+      - setr
+    description: Grants a rank to players
 depend:
   - LuckPerms
+permissions:
+  lobby.builder:
+    description: builder
+  lobby.cs+:
+    description: CS+ rank
+  lobby.csp:
+    description: CSP rank
