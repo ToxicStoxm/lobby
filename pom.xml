@@ -36,6 +36,7 @@
                 <version>3.5.0</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <finalName>${artifactId}-Bukkit-${version}.jar</finalName>
                     <artifactSet>
                         <includes>
                             <include>${foundation.path}:Foundation*</include>
