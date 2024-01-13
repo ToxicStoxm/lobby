@@ -6,10 +6,8 @@ import com.tchristofferson.configupdater.ConfigUpdater;
 import com.x_tornado10.lobby.commands.GrantRankCommand;
 import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
 import com.x_tornado10.lobby.commands.LobbyCommand;
-import com.x_tornado10.lobby.commands.LobbyCommandDisabled;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.JoinListener;
-import com.x_tornado10.lobby.listeners.LobbyListener;
 import com.x_tornado10.lobby.listeners.PlayerStatsListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
@@ -40,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -49,8 +46,6 @@ public final class Lobby extends SimplePlugin {
     public static Lobby getInstance() {
         return (Lobby) SimplePlugin.getInstance();
     }
-
-    public static boolean isLobby;
 
     @Getter
     private ConfigMgr configMgr;
@@ -108,30 +103,19 @@ public final class Lobby extends SimplePlugin {
             logger.severe("Wasn't able to get milestones from 'milestones.yml' please check your syntax!");
         }
 
-        Menu.setSound(null);
-        ButtonReturnBack.setItemStack(ItemCreator.of(CompMaterial.RED_STAINED_GLASS_PANE).name(ChatColor.RED + "Go Back").lore(ChatColor.GRAY + "To my Profile").make());
+        //Menu.setSound(null);
+        //ButtonReturnBack.setItemStack(ItemCreator.of(CompMaterial.RED_STAINED_GLASS_PANE).name(ChatColor.RED + "Go Back").lore(ChatColor.GRAY + "To my Profile").make());
 
-        isLobby = configMgr.isLobby();
-        itemGetter = new ItemGetter();
-        joinListener = new JoinListener(configMgr.spawn(), configMgr.joinMsg());
+        //itemGetter = new ItemGetter();
+        //joinListener = new JoinListener(configMgr.spawn(), configMgr.joinMsg());
         PluginCommand grantRank = Bukkit.getPluginCommand("setrank");
         if (grantRank != null) {
             grantRank.setExecutor(new GrantRankCommand());
             grantRank.setTabCompleter(new GrantRankCommandTabCompletor());
         }
-        if (isLobby) {
-            lpAPI = LuckPermsProvider.get();
-            Bukkit.getPluginManager().registerEvents(joinListener, this);
-            Bukkit.getPluginManager().registerEvents(new LobbyListener(configMgr.isBuildMode(), configMgr.getDoor()), this);
-            PluginCommand lobby = Bukkit.getPluginCommand("lobby");
-            if (lobby != null) {
-                lobby.setExecutor(new LobbyCommandDisabled());
-            }
-        } else {
-            PluginCommand lobby = Bukkit.getPluginCommand("lobby");
-            if (lobby != null) {
-                lobby.setExecutor(new LobbyCommand());
-            }
+        PluginCommand lobby = Bukkit.getPluginCommand("lobby");
+        if (lobby != null) {
+            lobby.setExecutor(new LobbyCommand());
         }
         playerStatsListener = new PlayerStatsListener();
         Bukkit.getPluginManager().registerEvents(playerStatsListener, this);
