@@ -7,11 +7,9 @@ import com.x_tornado10.lobby.commands.GrantRankCommand;
 import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
 import com.x_tornado10.lobby.commands.LobbyCommand;
 import com.x_tornado10.lobby.db.Database;
-import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.PlayerStatsListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
-import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Paths;
 import lombok.Getter;
@@ -25,12 +23,9 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
-import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -50,14 +45,14 @@ public final class Lobby extends SimplePlugin {
     @Getter
     private ConfigMgr configMgr;
 
-    private JoinListener joinListener;
+    //private JoinListener joinListener;
     @Getter
     private Database database;
     private Logger logger;
     @Getter
     private LuckPerms lpAPI;
-    @Getter
-    private ItemGetter itemGetter;
+    //@Getter
+    //private ItemGetter itemGetter;
     @Getter
     private MilestoneMgr milestonesMgr;
     private PlayerStatsListener playerStatsListener;
@@ -98,9 +93,9 @@ public final class Lobby extends SimplePlugin {
         }
         try {
             milestonesMgr = new MilestoneMgr();
-        } catch (NullPointerException e) {
+        } catch (SQLException e) {
             logger.severe(e.getMessage());
-            logger.severe("Wasn't able to get milestones from 'milestones.yml' please check your syntax!");
+            logger.severe("Wasn't able to get milestones from database please check your syntax!");
         }
 
         //Menu.setSound(null);

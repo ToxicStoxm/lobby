@@ -7,6 +7,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.mineacademy.fo.database.SimpleDatabase;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -136,20 +137,26 @@ public class Database extends SimpleDatabase {
         }
         statement.close();
     }
-    /*
-    public void updateMileStones(Milestone[] milestones) throws SQLException {
-        PreparedStatement statement = prepareStatement("UPDATE milestones SET title = ?, subtitle = ?, color = ?, playtime = ? WHERE id = ?");
-        for (Milestone m : milestones) {
-            statement.setString(1, m.title());
-            statement.setString(2, m.subtitle());
-            statement.setString(3, m.color());
-            statement.setDouble(4, m.playtime());
-            statement.setInt(5, m.id());
-            statement.executeUpdate();
+    public List<Milestone> getMilestones() throws SQLException {
+        List<Milestone> milestoneList = new ArrayList<>();
+
+        try (PreparedStatement statement = prepareStatement("SELECT * FROM milestones");
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String subtitle = resultSet.getString("subtitle");
+                String color = resultSet.getString("color");
+                double playtime = resultSet.getDouble("playtime");
+
+                Milestone milestone = new Milestone(id, title, subtitle, color, playtime);
+                milestoneList.add(milestone);
+            }
         }
-        statement.close();
+
+        return milestoneList;
     }
-     */
 
     public void deletePlayerStats(PlayerStats playerStats) throws SQLException {
         PreparedStatement statement = prepareStatement("DELETE FROM player_stats WHERE uuid = ?");
