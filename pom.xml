@@ -9,7 +9,7 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>lobby-child</name>
+    <name>lobby</name>
 
     <description>Lobby plugin</description>
     <properties>
@@ -36,6 +36,7 @@
                 <version>3.5.0</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <finalName>${artifactId}-child-Bukkit-${version}.jar</finalName>
                     <artifactSet>
                         <includes>
                             <include>${foundation.path}:Foundation*</include>
