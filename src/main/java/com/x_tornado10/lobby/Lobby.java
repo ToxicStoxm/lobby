@@ -6,12 +6,10 @@ import com.tchristofferson.configupdater.ConfigUpdater;
 import com.x_tornado10.lobby.commands.GrantRankCommand;
 import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
 import com.x_tornado10.lobby.commands.LobbyCommand;
-import com.x_tornado10.lobby.commands.LobbyCommandDisabled;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
 import com.x_tornado10.lobby.listeners.PlayerStatsListener;
-import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
@@ -40,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -121,7 +118,7 @@ public final class Lobby extends SimplePlugin {
         Bukkit.getPluginManager().registerEvents(new LobbyListener(configMgr.getDoor()), this);
         PluginCommand lobby = Bukkit.getPluginCommand("lobby");
         if (lobby != null) {
-            lobby.setExecutor(new LobbyCommandDisabled());
+            lobby.setExecutor(new LobbyCommand());
         }
         playerStatsListener = new PlayerStatsListener();
         Bukkit.getPluginManager().registerEvents(playerStatsListener, this);
