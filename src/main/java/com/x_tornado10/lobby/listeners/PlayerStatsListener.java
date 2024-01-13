@@ -195,7 +195,6 @@ public class PlayerStatsListener implements Listener {
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(e.getPlayer());
             playerStats.setBlocks_broken(playerStats.getBlocks_broken()+1);
-            e.getPlayer().sendMessage(convertSeconds((int) playerStats.getPlaytime() / 1000));
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
             logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());

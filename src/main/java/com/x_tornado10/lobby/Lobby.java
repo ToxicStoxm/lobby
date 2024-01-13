@@ -83,7 +83,7 @@ public final class Lobby extends SimplePlugin {
         database = new Database(configMgr.getDbCredentials());
 
 
-
+        /*
         try {
             if (!database.initialize()) {
                 logger.severe("Couldn't initialize database! Disabling plugin!");
@@ -95,6 +95,8 @@ public final class Lobby extends SimplePlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+         */
         try {
             milestonesMgr = new MilestoneMgr();
         } catch (SQLException e) {
