@@ -50,8 +50,6 @@ public final class Lobby extends SimplePlugin {
         return (Lobby) SimplePlugin.getInstance();
     }
 
-    public static boolean isLobby;
-
     @Getter
     private ConfigMgr configMgr;
 
@@ -111,7 +109,6 @@ public final class Lobby extends SimplePlugin {
         Menu.setSound(null);
         ButtonReturnBack.setItemStack(ItemCreator.of(CompMaterial.RED_STAINED_GLASS_PANE).name(ChatColor.RED + "Go Back").lore(ChatColor.GRAY + "To my Profile").make());
 
-        isLobby = configMgr.isLobby();
         itemGetter = new ItemGetter();
         joinListener = new JoinListener(configMgr.spawn(), configMgr.joinMsg());
         PluginCommand grantRank = Bukkit.getPluginCommand("setrank");
@@ -119,19 +116,12 @@ public final class Lobby extends SimplePlugin {
             grantRank.setExecutor(new GrantRankCommand());
             grantRank.setTabCompleter(new GrantRankCommandTabCompletor());
         }
-        if (isLobby) {
-            lpAPI = LuckPermsProvider.get();
-            Bukkit.getPluginManager().registerEvents(joinListener, this);
-            Bukkit.getPluginManager().registerEvents(new LobbyListener(configMgr.isBuildMode(), configMgr.getDoor()), this);
-            PluginCommand lobby = Bukkit.getPluginCommand("lobby");
-            if (lobby != null) {
-                lobby.setExecutor(new LobbyCommandDisabled());
-            }
-        } else {
-            PluginCommand lobby = Bukkit.getPluginCommand("lobby");
-            if (lobby != null) {
-                lobby.setExecutor(new LobbyCommand());
-            }
+        lpAPI = LuckPermsProvider.get();
+        Bukkit.getPluginManager().registerEvents(joinListener, this);
+        Bukkit.getPluginManager().registerEvents(new LobbyListener(configMgr.getDoor()), this);
+        PluginCommand lobby = Bukkit.getPluginCommand("lobby");
+        if (lobby != null) {
+            lobby.setExecutor(new LobbyCommandDisabled());
         }
         playerStatsListener = new PlayerStatsListener();
         Bukkit.getPluginManager().registerEvents(playerStatsListener, this);

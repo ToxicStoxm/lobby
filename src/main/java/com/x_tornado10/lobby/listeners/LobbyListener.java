@@ -37,7 +37,6 @@ import java.util.*;
 import java.util.List;
 
 public class LobbyListener implements Listener{
-    private final boolean buildMode;
     private final Lobby plugin;
     private final double reachDistance;
     private final List<Location> door;
@@ -47,8 +46,7 @@ public class LobbyListener implements Listener{
     private boolean doorClosing = false;
     private final HashMap<UUID, Long> cooldown;
 
-    public LobbyListener(boolean buildMode, List<Location> door) {
-        this.buildMode = buildMode;
+    public LobbyListener(List<Location> door) {
         plugin = Lobby.getInstance();
         reachDistance = 4.0;
         this.door = door;
@@ -69,33 +67,33 @@ public class LobbyListener implements Listener{
     @EventHandler
     public void onItemMove(InventoryMoveItemEvent e) {
         Player p = (Player) e.getInitiator().getViewers().get(0);
-        if (!buildMode && isNotBuilder(p)) e.setCancelled(true);
+        if (isNotBuilder(p)) e.setCancelled(true);
     }
 
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        if (!buildMode && isNotBuilder(e.getPlayer())) e.setCancelled(true);
+        if (isNotBuilder(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (!buildMode && isNotBuilder(e.getPlayer())) e.setCancelled(true);
+        if (isNotBuilder(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player p) {
-            if (!buildMode && isNotBuilder(p)) e.setCancelled(true);
+            if (isNotBuilder(p)) e.setCancelled(true);
         } else if (e.getDamager() instanceof Player p && e.getEntity() instanceof ItemFrame) {
-            if (!buildMode && isNotBuilder(p)) e.setCancelled(true);
+            if (isNotBuilder(p)) e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
-            if (!buildMode && isNotBuilder(p)) e.setCancelled(true);
+            if (isNotBuilder(p)) e.setCancelled(true);
         }
     }
 
@@ -103,12 +101,12 @@ public class LobbyListener implements Listener{
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         Location loc = p.getLocation();
-        if (loc.getY() >= 200 && !buildMode && isNotBuilder(p)) {
+        if (loc.getY() >= 200 && isNotBuilder(p)) {
             if (!(e.getFrom().getY() >= 200)) e.setCancelled(true);
             loc.setY(199);
             p.teleport(loc);
         }
-        if (loc.getY() <= -50 && !buildMode && isNotBuilder(p)) JoinListener.tpSpawn(p);
+        if (loc.getY() <= -50 && isNotBuilder(p)) JoinListener.tpSpawn(p);
         p.setFoodLevel(20);
 
         if (isInPredefinedAreaOpen(p.getLocation())) {
@@ -266,7 +264,7 @@ public class LobbyListener implements Listener{
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        if (!buildMode && isNotBuilder(e.getEntity())) {
+        if (isNotBuilder(e.getEntity())) {
             Player p = e.getEntity();
             e.setDeathMessage("");
             e.setKeepLevel(true);
@@ -279,7 +277,7 @@ public class LobbyListener implements Listener{
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (!buildMode && isNotBuilder(p)) {
+        if (isNotBuilder(p)) {
             if (e.getClickedInventory() == null) return;
             ItemStack i = e.getClickedInventory().getItem(e.getSlot());
             if (i == null) {
@@ -305,7 +303,7 @@ public class LobbyListener implements Listener{
                 Block clickedBlock = e.getClickedBlock();
                 if (clickedBlock != null && action == Action.RIGHT_CLICK_BLOCK) {
                     if (clickedBlock.getType().toString().contains("TRAPDOOR") || clickedBlock.getType().equals(Material.FLOWER_POT) || clickedBlock.getType().equals(Material.COMPOSTER) || clickedBlock.getType().name().startsWith("POTTED_")) {
-                        if (!buildMode && isNotBuilder(p)) e.setCancelled(true);
+                        if (isNotBuilder(p)) e.setCancelled(true);
                     }
                 }
             }
@@ -379,19 +377,19 @@ public class LobbyListener implements Listener{
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         if (e.getRightClicked() instanceof Player p) {
             new LobbyPlayerStats(p).displayTo(e.getPlayer());
-        } else if (e.getRightClicked().getType().equals(EntityType.ITEM_FRAME) && !buildMode && isNotBuilder(e.getPlayer())) {
+        } else if (e.getRightClicked().getType().equals(EntityType.ITEM_FRAME) && isNotBuilder(e.getPlayer())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent e) {
-        if (!buildMode && isNotBuilder(e.getPlayer())) e.setCancelled(true);
+        if (isNotBuilder(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onSignChange(SignChangeEvent e) {
-        if (!buildMode && isNotBuilder(e.getPlayer())) e.setCancelled(true);
+        if (isNotBuilder(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
