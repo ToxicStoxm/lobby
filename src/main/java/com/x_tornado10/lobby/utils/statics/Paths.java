@@ -9,7 +9,6 @@ public class Paths {
     public static void initialize() {
         plPath = Lobby.getInstance().getDataFolder().getPath();
         plFiles.add("milestones.yml");
-        plFiles.add("playtime.yml");
     }
     public static String lobby = "Lobby";
     public static String world = "Spawn.World";
