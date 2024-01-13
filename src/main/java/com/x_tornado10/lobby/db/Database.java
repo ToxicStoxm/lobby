@@ -2,15 +2,11 @@ package com.x_tornado10.lobby.db;
 
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.mineacademy.fo.database.SimpleDatabase;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class Database extends SimpleDatabase {
 
@@ -22,33 +18,23 @@ public class Database extends SimpleDatabase {
         connect(host, Integer.parseInt(parts1[0]),parts1[1],credentials.get(1),credentials.get(2),"player_stats",true);
     }
 
-    public void initialize() throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS player_stats (" +
-                "uuid VARCHAR(36) PRIMARY KEY, " +
-                "deaths BIGINT, " +
-                "player_kills BIGINT, " +
-                "mob_kills BIGINT, " +
-                "blocks_broken BIGINT, " +
-                "blocks_placed BIGINT, " +
-                "last_login DATETIME, " +
-                "login_streak BIGINT, " +
-                "logins BIGINT," +
-                "chat_messages_send BIGINT," +
-                "playtime BIGINT" +
-                ")";
-        String sql1 = "CREATE TABLE IF NOT EXISTS milestones (" +
-                "id INT PRIMARY KEY, " +
-                "title VARCHAR(255), " +
-                "subtitle VARCHAR(255), " +
-                "color VARCHAR(255), " +
-                "playtime DOUBLE" +
-                ")";
-        PreparedStatement statement = prepareStatement(sql);
-        PreparedStatement statement1 = prepareStatement(sql1);
-        statement.execute();
-        statement1.execute();
-        statement.close();
-        statement1.close();
+    public boolean initialize() throws SQLException {
+        boolean playerStatsTableExists = doesTableExist("player_stats");
+        boolean milestonesTableExists = doesTableExist("milestones");
+        return playerStatsTableExists && milestonesTableExists;
+    }
+
+    private boolean doesTableExist(String tableName) throws SQLException {
+        String query = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
+
+        try (PreparedStatement statement = prepareStatement(query)) {
+            statement.setString(1, "your_database_name");
+            statement.setString(2, tableName);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
     }
 
     public PlayerStats findPlayerStatsByUUID(String uuid) throws SQLException {
@@ -122,21 +108,6 @@ public class Database extends SimpleDatabase {
         statement.close();
 
     }
-    public void setMileStones(Milestone[] milestones) throws SQLException {
-        PreparedStatement del = prepareStatement("DELETE FROM milestones");
-        del.execute();
-        del.close();
-        PreparedStatement statement = prepareStatement("INSERT INTO milestones(id, title, subtitle, color, playtime) VALUES (?, ?, ?, ?, ?)");
-        for (Milestone m : milestones) {
-            statement.setInt(1, m.id());
-            statement.setString(2, m.title());
-            statement.setString(3, m.subtitle());
-            statement.setString(4, m.color());
-            statement.setDouble(5, m.playtime());
-            statement.executeUpdate();
-        }
-        statement.close();
-    }
     public List<Milestone> getMilestones() throws SQLException {
         List<Milestone> milestoneList = new ArrayList<>();
 
@@ -167,6 +138,5 @@ public class Database extends SimpleDatabase {
         statement.close();
 
     }
-
 }
 

@@ -9,7 +9,7 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>lobby</name>
+    <name>lobby-child</name>
 
     <description>Lobby plugin</description>
     <properties>

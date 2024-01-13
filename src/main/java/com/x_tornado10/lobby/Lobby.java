@@ -82,9 +82,13 @@ public final class Lobby extends SimplePlugin {
         configMgr = new ConfigMgr();
         database = new Database(configMgr.getDbCredentials());
 
+
+
         try {
-            database.initialize();
-            logger.info("Successfully initialized database.");
+            if (!database.initialize()) {
+                logger.severe("Couldn't initialize database! Disabling plugin!");
+                Bukkit.getPluginManager().disablePlugin(this);
+            } else logger.info("Successfully initialized database.");
         } catch (SQLException e) {
             logger.severe("Couldn't initialize database! Disabling plugin!");
             logger.severe(e.getMessage());
@@ -98,11 +102,6 @@ public final class Lobby extends SimplePlugin {
             logger.severe("Wasn't able to get milestones from database please check your syntax!");
         }
 
-        //Menu.setSound(null);
-        //ButtonReturnBack.setItemStack(ItemCreator.of(CompMaterial.RED_STAINED_GLASS_PANE).name(ChatColor.RED + "Go Back").lore(ChatColor.GRAY + "To my Profile").make());
-
-        //itemGetter = new ItemGetter();
-        //joinListener = new JoinListener(configMgr.spawn(), configMgr.joinMsg());
         PluginCommand grantRank = Bukkit.getPluginCommand("setrank");
         if (grantRank != null) {
             grantRank.setExecutor(new GrantRankCommand());

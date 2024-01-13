@@ -3,6 +3,7 @@ package com.x_tornado10.lobby.managers;
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,16 @@ public class MilestoneMgr {
         Lobby plugin = Lobby.getInstance();
         milestones = new ArrayList<>();
         Database db = plugin.getDatabase();
-        milestones.addAll(db.getMilestones());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    milestones.addAll(db.getMilestones());
+                } catch (SQLException e) {
+                    this.runTaskLater(plugin, 10);
+                }
+            }
+        }.runTaskLater(plugin, 10);
     }
     @Nullable
     public Milestone getMilestone(@NotNull Double playtime) {
