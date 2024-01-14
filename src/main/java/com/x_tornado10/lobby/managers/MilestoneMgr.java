@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MilestoneMgr {
@@ -80,11 +81,13 @@ public class MilestoneMgr {
         if (last == null) return null;
         int i = last.id();
         List<Milestone> milestones = new ArrayList<>();
-        for (; i > 0; i--) {
+        for (; i >= 1; i--) {
             Milestone m = getMilestone(i);
             if (m == null) return null;
             milestones.add(m);
         }
+        milestones.add(last);
+        milestones.sort(Comparator.comparingInt(Milestone::id));
         return milestones;
     }
     public int MILESTONE_COUNT() {

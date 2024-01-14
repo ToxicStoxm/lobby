@@ -206,7 +206,7 @@ public class LobbyProfile extends Menu {
                 }
             } else {
                 for (int i : Item.MILESTONE_POS) {
-                    int milestone = currentPage * 8 - 7 + Item.MILESTONE_POS.indexOf(i);
+                    int milestone = currentPage * 8 - 7 + Item.MILESTONE_POS.indexOf(i);;
                     if (milestones.size() <= milestone) {
                         Milestone m = milestoneMgr.getMilestone(milestone);
                         if (m == null) {
@@ -221,7 +221,7 @@ public class LobbyProfile extends Menu {
                             }
                         }
                     } else {
-                        Milestone m = milestones.get(milestone);
+                        Milestone m = milestones.get(milestone - 1);
                         setItem(i, ItemCreator.of(CompMaterial.GOLD_BLOCK).name(ChatColor.of(m.color()) + m.title() + " - " + formatSeconds((long) m.playtime())).make());
                         for (int placeholder : Item.getPath(milestone > 8 ? adjustBelowEight(milestone) : milestone, currentPage, pages, pagesC)) {
                             if (placeholder != -1) setItem(placeholder, plugin.getItemGetter().MILESTONE_PATH_UNLOCKED());
