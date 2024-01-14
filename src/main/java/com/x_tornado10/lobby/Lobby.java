@@ -10,11 +10,11 @@ import com.x_tornado10.lobby.commands.SuffixChangeCommand;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
-import com.x_tornado10.lobby.listeners.PlayerStatsListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
+import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Paths;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
@@ -23,8 +23,10 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.group.GroupManager;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
+import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
+import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 
@@ -62,7 +65,7 @@ public final class Lobby extends SimplePlugin {
     private ItemGetter itemGetter;
     @Getter
     private MilestoneMgr milestonesMgr;
-    private PlayerStatsListener playerStatsListener;
+    //private PlayerStatsListener playerStatsListener;
 
     @Override
     protected void onPluginLoad() {
@@ -126,8 +129,8 @@ public final class Lobby extends SimplePlugin {
         if (lobby != null) {
             lobby.setExecutor(new LobbyCommand());
         }
-        playerStatsListener = new PlayerStatsListener();
-        Bukkit.getPluginManager().registerEvents(playerStatsListener, this);
+        //playerStatsListener = new PlayerStatsListener();
+        //Bukkit.getPluginManager().registerEvents(playerStatsListener, this);
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
@@ -173,8 +176,27 @@ public final class Lobby extends SimplePlugin {
         InheritanceNode inheritanceNode = InheritanceNode.builder(group).build();
         user.data().add(inheritanceNode);
         user.setPrimaryGroup(groupName);
-        playerStatsListener.updatePrefix(p);
+        updatePrefix(p);
         userManager.saveUser(user);
         lpAPI.runUpdateTask();
+    }
+    public void updatePrefix(Player p) {
+        UserManager mgr = lpAPI.getUserManager();
+        GroupManager gmgr = lpAPI.getGroupManager();
+        User usr = mgr.getUser(p.getUniqueId());
+        if (usr == null) return;
+        for (PrefixNode node0 : usr.getNodes(NodeType.PREFIX)) {
+            for (PrefixNode node : Objects.requireNonNull(gmgr.getGroup(usr.getPrimaryGroup())).getNodes(NodeType.PREFIX)) {
+                if (Convertor.containsHexCode(node0.getMetaValue())) {
+                    String color = Convertor.extractHexCode(node0.getMetaValue());
+                    for (Node n : usr.getNodes()) {
+                        if (n.getType() == NodeType.PREFIX) {
+                            usr.data().remove(n);
+                        }
+                    }
+                    usr.data().add(PrefixNode.builder(Convertor.replaceHexCodes(node.getMetaValue(), color), 5).build());
+                }
+            }
+        }
     }
 }
