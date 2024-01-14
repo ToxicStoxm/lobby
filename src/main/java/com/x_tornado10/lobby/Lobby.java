@@ -9,7 +9,6 @@ import com.x_tornado10.lobby.commands.LobbyCommand;
 import com.x_tornado10.lobby.commands.SuffixChangeCommand;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.JoinListener;
-import com.x_tornado10.lobby.listeners.LobbyListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
