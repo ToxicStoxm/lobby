@@ -64,7 +64,6 @@ public final class Lobby extends SimplePlugin {
     private ItemGetter itemGetter;
     @Getter
     private MilestoneMgr milestonesMgr;
-    //private PlayerStatsListener playerStatsListener;
 
     @Override
     protected void onPluginLoad() {
@@ -128,8 +127,6 @@ public final class Lobby extends SimplePlugin {
         if (lobby != null) {
             lobby.setExecutor(new LobbyCommand());
         }
-        //playerStatsListener = new PlayerStatsListener();
-        //Bukkit.getPluginManager().registerEvents(playerStatsListener, this);
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
