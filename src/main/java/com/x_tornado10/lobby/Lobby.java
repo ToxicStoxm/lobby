@@ -6,6 +6,7 @@ import com.tchristofferson.configupdater.ConfigUpdater;
 import com.x_tornado10.lobby.commands.GrantRankCommand;
 import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
 import com.x_tornado10.lobby.commands.LobbyCommand;
+import com.x_tornado10.lobby.commands.SuffixChangeCommand;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.PlayerStatsListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
@@ -112,6 +113,10 @@ public final class Lobby extends SimplePlugin {
         PluginCommand lobby = Bukkit.getPluginCommand("lobby");
         if (lobby != null) {
             lobby.setExecutor(new LobbyCommand());
+        }
+        PluginCommand setSuffix = Bukkit.getPluginCommand("setsuffix");
+        if (setSuffix != null) {
+            setSuffix.setExecutor(new SuffixChangeCommand());
         }
         playerStatsListener = new PlayerStatsListener();
         Bukkit.getPluginManager().registerEvents(playerStatsListener, this);
