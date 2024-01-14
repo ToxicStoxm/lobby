@@ -260,7 +260,7 @@ public class PlayerStatsListener implements Listener {
         String color = m.color();
         String sub_color = Convertor.darkenHexColor(color, Convertor.DEFAULT);
 
-        p.sendTitle(ChatColor.of(color) + title, ChatColor.of(sub_color) + subtitle, Convertor.TITLE_FADEIN, Convertor.TITLE_STAY, Convertor.TITLE_FADEOUT);
+        p.sendTitle(ChatColor.of(color) + "Unlocked milestone - " + title, ChatColor.of(sub_color) + subtitle, Convertor.TITLE_FADEIN, Convertor.TITLE_STAY, Convertor.TITLE_FADEOUT);
         p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 999999999,1);
         return true;
     }
