@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ItemGetter {
@@ -29,6 +30,7 @@ public class ItemGetter {
         } catch (SQLException e) {
             return null;
         }
+        if (stats == null) stats = new PlayerStats(String.valueOf(p.getUniqueId()),0,0,0,0,0,new Date(),0,0,0,0);
         statsList.add(STATS_PVP(stats));
         statsList.add(STATS_BLOCKS(stats));
         statsList.add(STATS_TIME(stats));
