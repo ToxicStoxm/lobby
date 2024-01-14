@@ -66,8 +66,7 @@ public class ConfigMgr {
         return locs;
     }
     public FileConfiguration getMilestones() throws NullPointerException {
-        InputStream inputStream = plugin.getResource("milestones.yml");
-        if (inputStream == null) throw new NullPointerException();
-        return YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream));
+        File file = new File(plugin.getDataFolder() + "/milestones.yml");
+        return YamlConfiguration.loadConfiguration(file);
     }
 }

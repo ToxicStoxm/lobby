@@ -160,8 +160,11 @@ public class LobbyProfile extends Menu {
                     }
                 } else {
                     for (Integer i : Item.MILESTONE_BOUNDS) {
-                        if (i != getReturnButtonPosition() && i != 48 && i != 50 && i != 17 && i != 9) {
-                            setItem(i, Item.BOUNDS());
+                        if (i != getReturnButtonPosition() && i != 48 && i != 50 && i != 9) {
+                            if (pagesC > currentPage) {
+                                if (i != 17) setItem(i, Item.BOUNDS());
+                            }
+                            else setItem(i, Item.BOUNDS());
                         } else if (getParent() == null) {
                             setItem(i, Item.BOUNDS());
                         }
@@ -228,7 +231,7 @@ public class LobbyProfile extends Menu {
             }
         }
         public static int adjustBelowEight(int number) {
-            while (number >= 8) {
+            while (number > 8) {
                 number -= 8;
             }
             return number;
