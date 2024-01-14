@@ -6,6 +6,7 @@ import com.tchristofferson.configupdater.ConfigUpdater;
 import com.x_tornado10.lobby.commands.GrantRankCommand;
 import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
 import com.x_tornado10.lobby.commands.LobbyCommand;
+import com.x_tornado10.lobby.commands.SuffixChangeCommand;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
@@ -113,6 +114,10 @@ public final class Lobby extends SimplePlugin {
         if (grantRank != null) {
             grantRank.setExecutor(new GrantRankCommand());
             grantRank.setTabCompleter(new GrantRankCommandTabCompletor());
+        }
+        PluginCommand setSuffix = Bukkit.getPluginCommand("setsuffix");
+        if (setSuffix != null) {
+            setSuffix.setExecutor(new SuffixChangeCommand());
         }
         lpAPI = LuckPermsProvider.get();
         Bukkit.getPluginManager().registerEvents(joinListener, this);

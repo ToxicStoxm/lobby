@@ -15,6 +15,10 @@ commands:
       - rank
       - setr
     description: Grants a rank to players
+  setsuffix:
+    aliases:
+      - suffix
+    description: change suffix
 depend:
   - LuckPerms
 permissions:
