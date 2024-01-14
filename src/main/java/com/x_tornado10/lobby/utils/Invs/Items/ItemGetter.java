@@ -95,7 +95,7 @@ public class ItemGetter {
         return ItemCreator.of(CompMaterial.IRON_NUGGET).name(String.valueOf(ChatColor.RED) + ChatColor.ITALIC + "Achievement Path locked").make();
     }
     public ItemStack MILESTONE_PATH_UNLOCKED() {
-        return ItemCreator.of(CompMaterial.GOLD_NUGGET).name(String.valueOf(ChatColor.of("#db912a")) + ChatColor.ITALIC + "Achievement Path locked").make();
+        return ItemCreator.of(CompMaterial.GOLD_NUGGET).name(String.valueOf(ChatColor.of("#db912a")) + ChatColor.ITALIC + "Achievement Path unlocked").make();
     }
     public ItemStack PAGE_BACK() {
         return ItemCreator.of(CompMaterial.GRAY_STAINED_GLASS_PANE).name(ChatColor.GRAY + "Last Page").make();

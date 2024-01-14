@@ -85,7 +85,6 @@ public class MilestoneMgr {
             if (m == null) return null;
             milestones.add(m);
         }
-        if (milestones.size() != i) return null;
         return milestones;
     }
     public int MILESTONE_COUNT() {

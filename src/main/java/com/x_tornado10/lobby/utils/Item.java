@@ -1,5 +1,6 @@
 package com.x_tornado10.lobby.utils;
 
+import io.r2dbc.spi.Parameter;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
@@ -63,6 +64,15 @@ public class Item {
         MILESTONE_BOUNDS.add(31);
         MILESTONE_BOUNDS.add(33);
         MILESTONE_BOUNDS.add(40);
+        MILESTONE_POS = new ArrayList<>();
+        MILESTONE_POS.add(MILESTONE1);
+        MILESTONE_POS.add(MILESTONE2);
+        MILESTONE_POS.add(MILESTONE3);
+        MILESTONE_POS.add(MILESTONE4);
+        MILESTONE_POS.add(MILESTONE5);
+        MILESTONE_POS.add(MILESTONE6);
+        MILESTONE_POS.add(MILESTONE7);
+        MILESTONE_POS.add(MILESTONE8);
 
     }
     public static ItemStack BOUNDS() {
@@ -87,5 +97,19 @@ public class Item {
     public static final int MILESTONE6 = 41;
     public static final int MILESTONE7 = 43;
     public static final int MILESTONE8 = 16;
+    public static List<Integer> MILESTONE_POS;
+    public static Integer[] getPath(int milestone, int page, boolean pages) {
+        return switch (milestone) {
+            case 1 -> page > 1 ? new Integer[]{9} : new Integer[]{-1};
+            case 2 -> new Integer[]{19, 28};
+            case 3 -> new Integer[]{38};
+            case 4 -> new Integer[]{21, 30};
+            case 5 -> new Integer[]{13};
+            case 6 -> new Integer[]{23, 32};
+            case 7 -> new Integer[]{42};
+            case 8 -> pages ? new Integer[]{25, 34, 17} : new Integer[]{25, 34};
+            default -> new Integer[]{-1};
+        };
+    }
 
 }
