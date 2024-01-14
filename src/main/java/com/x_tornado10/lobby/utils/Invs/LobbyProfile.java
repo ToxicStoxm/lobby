@@ -89,7 +89,7 @@ public class LobbyProfile extends Menu {
             super(LobbyProfile.this);
             MilestoneMgr milestoneMgr = Lobby.getInstance().getMilestonesMgr();
             int i = (int) Math.ceil((double) milestoneMgr.MILESTONE_COUNT() / 8);
-            setSize(9 * 3);
+            setSize(9 * 6);
             if (i > 1) {
                 if (!pages) {
                     pages = true;
@@ -111,7 +111,7 @@ public class LobbyProfile extends Menu {
 
                 @Override
                 public ItemStack getItem() {
-                    if (!pages) return null;
+                    if (!pages) return Item.BOUNDS();
                     else return Lobby.getInstance().getItemGetter().PAGE_BACK();
                 }
             };
@@ -129,11 +129,10 @@ public class LobbyProfile extends Menu {
 
                 @Override
                 public ItemStack getItem() {
-                    if (!pages) return null;
+                    if (!pages) return Item.BOUNDS();
                     else return Lobby.getInstance().getItemGetter().PAGE_NEXT();
                 }
             };
-
         }
 
         @Override
@@ -143,10 +142,8 @@ public class LobbyProfile extends Menu {
 
         private void drawItems() {
             for (Integer i : Item.MILESTONE_BOUNDS) {
-                if (i != getReturnButtonPosition()) {
-                    if (i != 48 && (i != 50 || !pages)) {
-                        setItem(i, Item.BOUNDS());
-                    }
+                if (i != getReturnButtonPosition() && i != 48 && i != 50) {
+                    setItem(i, Item.BOUNDS());
                 } else if (getParent() == null) {
                     setItem(i, Item.BOUNDS());
                 }

@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class JoinListener implements Listener {
@@ -37,6 +38,12 @@ public class JoinListener implements Listener {
         p.setFoodLevel(20);
         p.setTotalExperience(0);
         p.setLevel(0);
+        p.setExp(0);
+        try {
+            p.setLevel(plugin.getMilestonesMgr().getMilestone((double) plugin.getDatabase().findPlayerStatsByUUID(String.valueOf(p.getUniqueId())).getPlaytime()).id());
+        } catch (SQLException | NullPointerException e) {
+            p.setLevel(0);
+        }
         p.setGameMode(GameMode.ADVENTURE);
         if (plugin.checkGroup(p, "csp") || plugin.checkGroup(p, "cs+")) p.setAllowFlight(true);
         inv(p);
