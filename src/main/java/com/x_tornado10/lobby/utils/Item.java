@@ -98,7 +98,7 @@ public class Item {
     public static final int MILESTONE7 = 43;
     public static final int MILESTONE8 = 16;
     public static List<Integer> MILESTONE_POS;
-    public static Integer[] getPath(int milestone, int page, boolean pages) {
+    public static Integer[] getPath(int milestone, int page, boolean pages, int pagesC) {
         return switch (milestone) {
             case 1 -> page > 1 ? new Integer[]{9} : new Integer[]{-1};
             case 2 -> new Integer[]{19, 28};
@@ -107,7 +107,7 @@ public class Item {
             case 5 -> new Integer[]{13};
             case 6 -> new Integer[]{23, 32};
             case 7 -> new Integer[]{42};
-            case 8 -> pages ? new Integer[]{25, 34, 17} : new Integer[]{25, 34};
+            case 8 -> pages ? page < pagesC ? new Integer[]{25, 34, 17} : new Integer[]{25, 34} : new Integer[]{25, 34};
             default -> new Integer[]{-1};
         };
     }

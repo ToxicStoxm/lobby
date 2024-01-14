@@ -98,10 +98,10 @@ public class ItemGetter {
         return ItemCreator.of(CompMaterial.GOLD_NUGGET).name(String.valueOf(ChatColor.of("#db912a")) + ChatColor.ITALIC + "Achievement Path unlocked").make();
     }
     public ItemStack PAGE_BACK() {
-        return ItemCreator.of(CompMaterial.GRAY_STAINED_GLASS_PANE).name(ChatColor.GRAY + "Last Page").make();
+        return ItemCreator.of(CompMaterial.GREEN_STAINED_GLASS_PANE).name(ChatColor.GRAY + "Last Page").make();
     }
     public ItemStack PAGE_NEXT() {
-        return ItemCreator.of(CompMaterial.GRAY_STAINED_GLASS_PANE).name(ChatColor.GRAY + "Next Page").make();
+        return ItemCreator.of(CompMaterial.GREEN_STAINED_GLASS_PANE).name(ChatColor.GRAY + "Next Page").make();
     }
     public static String formatMillis(long milliseconds) {
         long seconds = milliseconds / 1000;

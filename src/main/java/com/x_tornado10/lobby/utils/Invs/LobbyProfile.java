@@ -9,6 +9,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mineacademy.fo.menu.Menu;
@@ -84,8 +85,8 @@ public class LobbyProfile extends Menu {
         private final Button lastPage;
         @Position(50)
         private final Button nextPage;
-        private static boolean pages = false;
-        private static int pagesC = 1;
+        private boolean pages = false;
+        private int pagesC = 1;
         private int currentPage = 1;
         private final Lobby plugin;
         private final MilestoneMgr milestoneMgr;
@@ -97,11 +98,9 @@ public class LobbyProfile extends Menu {
             int i = (int) Math.ceil((double) milestoneMgr.MILESTONE_COUNT() / 8);
             setSize(9 * 6);
             if (i > 1) {
-                plugin.getLogger().severe("DEBUG1");
                 pages = true;
                 pagesC = i;
             }
-            plugin.getLogger().severe(pages + "     " + pagesC + "            " + i);
             setTitle(ChatColor.DARK_GRAY + "Milestones (" + currentPage + "/" + pagesC + ")");
 
             lastPage = new Button() {
@@ -145,6 +144,8 @@ public class LobbyProfile extends Menu {
 
         @Override
         protected void onPostDisplay(Player viewer) {
+            currentPage = 1;
+            setTitle(ChatColor.DARK_GRAY + "Milestones (" + currentPage + "/" + pagesC + ")");
             drawItems(viewer);
         }
 
@@ -194,12 +195,12 @@ public class LobbyProfile extends Menu {
                     Milestone m = milestoneMgr.getMilestone(Item.MILESTONE_POS.indexOf(i) + 1);
                     if (m == null) {
                         setItem(i, Item.BOUNDS());
-                        for (int placeholder : Item.getPath(Item.MILESTONE_POS.indexOf(i) + 1 > 8 ? adjustBelowEight(Item.MILESTONE_POS.indexOf(i) + 1) : Item.MILESTONE_POS.indexOf(i) + 1, currentPage, pages)) {
+                        for (int placeholder : Item.getPath(Item.MILESTONE_POS.indexOf(i) + 1 > 8 ? adjustBelowEight(Item.MILESTONE_POS.indexOf(i) + 1) : Item.MILESTONE_POS.indexOf(i) + 1, currentPage, pages, pagesC)) {
                             if (placeholder != -1) setItem(placeholder, Item.BOUNDS());
                         }
                     } else {
                         setItem(i, ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "? - " + formatSeconds((long) m.playtime())).make());
-                        for (int placeholder : Item.getPath(Item.MILESTONE_POS.indexOf(i) + 1 > 8 ? adjustBelowEight(Item.MILESTONE_POS.indexOf(i) + 1) : Item.MILESTONE_POS.indexOf(i) + 1, currentPage, pages)) {
+                        for (int placeholder : Item.getPath(Item.MILESTONE_POS.indexOf(i) + 1 > 8 ? adjustBelowEight(Item.MILESTONE_POS.indexOf(i) + 1) : Item.MILESTONE_POS.indexOf(i) + 1, currentPage, pages, pagesC)) {
                             if (placeholder != -1) setItem(placeholder, plugin.getItemGetter().MILESTONE_PATH_LOCKED());
                         }
                     }
@@ -211,19 +212,19 @@ public class LobbyProfile extends Menu {
                         Milestone m = milestoneMgr.getMilestone(milestone);
                         if (m == null) {
                             setItem(i, Item.BOUNDS());
-                            for (int placeholder : Item.getPath(milestone > 8 ? adjustBelowEight(milestone) : milestone, currentPage, pages)) {
+                            for (int placeholder : Item.getPath(milestone > 8 ? adjustBelowEight(milestone) : milestone, currentPage, pages, pagesC)) {
                                 if (placeholder != -1) setItem(placeholder, Item.BOUNDS());
                             }
                         } else {
                             setItem(i, ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "? - " + formatSeconds((long) m.playtime())).make());
-                            for (int placeholder : Item.getPath(milestone > 8 ? adjustBelowEight(milestone) : milestone, currentPage, pages)) {
+                            for (int placeholder : Item.getPath(milestone > 8 ? adjustBelowEight(milestone) : milestone, currentPage, pages, pagesC)) {
                                 if (placeholder != -1) setItem(placeholder, plugin.getItemGetter().MILESTONE_PATH_LOCKED());
                             }
                         }
                     } else {
                         Milestone m = milestones.get(milestone);
                         setItem(i, ItemCreator.of(CompMaterial.GOLD_BLOCK).name(ChatColor.of(m.color()) + m.title() + " - " + formatSeconds((long) m.playtime())).make());
-                        for (int placeholder : Item.getPath(milestone > 8 ? adjustBelowEight(milestone) : milestone, currentPage, pages)) {
+                        for (int placeholder : Item.getPath(milestone > 8 ? adjustBelowEight(milestone) : milestone, currentPage, pages, pagesC)) {
                             if (placeholder != -1) setItem(placeholder, plugin.getItemGetter().MILESTONE_PATH_UNLOCKED());
                         }
                     }
