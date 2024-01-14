@@ -34,10 +34,15 @@ public class SuffixChangeCommand implements CommandExecutor {
                         UserManager usrMgr = lpAPI.getUserManager();
                         User usr = usrMgr.getUser(p.getName());
                         if (usr == null) return false;
+                        String suffix = ChatColor.RESET + args[0].replace("%_%", " ") + ChatColor.RESET;
+                        if (suffix.length() > 16) {
+                            p.sendMessage(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
+                            return true;
+                        }
                         for (SuffixNode snode : usr.getNodes(NodeType.SUFFIX)) {
                             usr.data().remove(snode);
                         }
-                        usr.data().add(SuffixNode.builder(ChatColor.RESET + args[0], 5).build());
+                        usr.data().add(SuffixNode.builder(suffix, 5).build());
                         usrMgr.saveUser(usr);
                         lpAPI.runUpdateTask();
                     }
@@ -55,10 +60,15 @@ public class SuffixChangeCommand implements CommandExecutor {
                     UserManager usrMgr = lpAPI.getUserManager();
                     User usr = usrMgr.getUser(args[0]);
                     if (usr == null) return false;
+                    String suffix = ChatColor.RESET + args[1].replace("%_%", " ") + ChatColor.RESET;
+                    if (suffix.length() > 16) {
+                        plugin.getLogger().info(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
+                        return true;
+                    }
                     for (SuffixNode snode : usr.getNodes(NodeType.SUFFIX)) {
                         usr.data().remove(snode);
                     }
-                    usr.data().add(SuffixNode.builder(ChatColor.RESET + args[0], 5).build());
+                    usr.data().add(SuffixNode.builder(suffix, 5).build());
                     usrMgr.saveUser(usr);
                     lpAPI.runUpdateTask();
                 }
