@@ -1,6 +1,7 @@
 package com.x_tornado10.lobby.utils.Invs;
 
 import com.x_tornado10.lobby.Lobby;
+import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.utils.Item;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -49,7 +50,7 @@ public class LobbyProfile extends Menu {
                 CompMaterial.ANVIL,
                 ChatColor.GREEN + "Milestones",
                 ChatColor.GRAY + "Click to see your progress!"
-                );
+        );
         closeButton = new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
@@ -73,32 +74,86 @@ public class LobbyProfile extends Menu {
         }
         super.onPostDisplay(viewer);
     }
+
     public class LobbyProfileMilestones extends Menu {
+
+        @Position(48)
+        private final Button lastPage;
+        @Position(50)
+        private final Button nextPage;
+        private static boolean pages = false;
+        private static int pagesC = 1;
+        private int currentPage = 1;
 
         public LobbyProfileMilestones() {
             super(LobbyProfile.this);
-            setSize(9 * 6);
+            MilestoneMgr milestoneMgr = Lobby.getInstance().getMilestonesMgr();
+            int i = (int) Math.ceil((double) milestoneMgr.MILESTONE_COUNT() / 8);
+            setSize(9 * 3);
+            if (i > 1) {
+                if (!pages) {
+                    pages = true;
+                    pagesC = i;
+                }
+            }
             setTitle(ChatColor.DARK_GRAY + "Milestones");
+
+            lastPage = new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
+                    if (pages) {
+                        if (currentPage > 1) {
+                            currentPage -= 1;
+                            drawItems();
+                        }
+                    }
+                }
+
+                @Override
+                public ItemStack getItem() {
+                    if (!pages) return null;
+                    else return Lobby.getInstance().getItemGetter().PAGE_BACK();
+                }
+            };
+
+            nextPage = new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
+                    if (pages) {
+                        if (currentPage < pagesC) {
+                            currentPage += 1;
+                            drawItems();
+                        }
+                    }
+                }
+
+                @Override
+                public ItemStack getItem() {
+                    if (!pages) return null;
+                    else return Lobby.getInstance().getItemGetter().PAGE_NEXT();
+                }
+            };
+
         }
 
         @Override
         protected void onPostDisplay(Player viewer) {
+            drawItems();
+        }
+
+        private void drawItems() {
             for (Integer i : Item.MILESTONE_BOUNDS) {
                 if (i != getReturnButtonPosition()) {
-                    setItem(i, Item.BOUNDS());
+                    if (i != 48 && (i != 50 || !pages)) {
+                        setItem(i, Item.BOUNDS());
+                    }
                 } else if (getParent() == null) {
                     setItem(i, Item.BOUNDS());
                 }
             }
-            List<ItemStack> locked = Lobby.getInstance().getItemGetter().getLocked();
-            int i = 0;
-            for (int j : Item.LOCKED_PLACEHOLDERS) {
-                setItem(j, locked.get(i));
-                i++;
-            }
-            super.onPostDisplay(viewer);
         }
     }
+
     public class LobbyProfileStats extends Menu {
 
         @Position(25)
@@ -111,6 +166,7 @@ public class LobbyProfile extends Menu {
             setSize(9 * 3);
             setTitle(ChatColor.DARK_GRAY + "Stats");
             this.p = p;
+
 
             refreshButton = new Button() {
                 @Override
@@ -129,7 +185,6 @@ public class LobbyProfile extends Menu {
                     return Lobby.getInstance().getItemGetter().REFRESH_BUTTON();
                 }
             };
-
         }
 
 
@@ -141,7 +196,7 @@ public class LobbyProfile extends Menu {
         private void drawItems() {
             for (Integer i : Item.BOUNDS26) {
                 if (i != getReturnButtonPosition() && i != 25) {
-                    setItem(i, Item.BOUNDS());
+                        setItem(i, Item.BOUNDS());
                 } else if (getParent() == null) {
                     setItem(i, Item.BOUNDS());
                 }
@@ -155,11 +210,12 @@ public class LobbyProfile extends Menu {
                     i++;
                 }
             }
-            setItem(10,ItemCreator.of(CompMaterial.PLAYER_HEAD)
+            setItem(10, ItemCreator.of(CompMaterial.PLAYER_HEAD)
                     .name(ChatColor.GREEN + "Your Stats")
                     .skullOwner(p.getName())
                     .make());
         }
+
         private void refresh() {
             setTitle(ChatColor.DARK_GRAY + "Refreshing stats...");
             ItemStack item = Lobby.getInstance().getItemGetter().REFRESHING_PLACEHOLDER();

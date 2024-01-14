@@ -13,7 +13,6 @@ public class Item {
     public static List<Integer> BOUNDS44 = null;
     public static List<Integer> STATS = null;
     public static List<Integer> MILESTONE_BOUNDS = null;
-    public static List<Integer> LOCKED_PLACEHOLDERS = null;
     private static void addToBounds53(int from, int to) {
         for (int i = from; i<=to; i++) {
             BOUNDS53.add(i);
@@ -64,8 +63,6 @@ public class Item {
         MILESTONE_BOUNDS.add(31);
         MILESTONE_BOUNDS.add(33);
         MILESTONE_BOUNDS.add(40);
-        LOCKED_PLACEHOLDERS = new ArrayList<>();
-        LOCKED_PLACEHOLDERS.addAll(findMissingNumbers(MILESTONE_BOUNDS));
 
     }
     public static ItemStack BOUNDS() {
@@ -82,20 +79,13 @@ public class Item {
     public final static int INVBOUNDS = 49;
     public final static int PROFILEMILESTONES = 50;
     public final static int BACKBUTTON0 = 51;
-    public static List<Integer> findMissingNumbers(List<Integer> inputList) {
-        if (inputList.isEmpty()) {
-            return Collections.emptyList();
-        }
-        int min = Collections.min(inputList);
-        int max = Collections.max(inputList);
-        List<Integer> missingNumbers = new ArrayList<>();
-        for (int i = min; i <= max; i++) {
-            if (!inputList.contains(i)) {
-                missingNumbers.add(i);
-            }
-        }
-        Collections.sort(missingNumbers);
-        return missingNumbers;
-    }
+    public static final int MILESTONE1 = 10;
+    public static final int MILESTONE2 = 37;
+    public static final int MILESTONE3 = 39;
+    public static final int MILESTONE4 = 12;
+    public static final int MILESTONE5 = 14;
+    public static final int MILESTONE6 = 41;
+    public static final int MILESTONE7 = 43;
+    public static final int MILESTONE8 = 16;
 
 }

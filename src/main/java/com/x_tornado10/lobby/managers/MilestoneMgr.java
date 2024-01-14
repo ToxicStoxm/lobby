@@ -74,4 +74,21 @@ public class MilestoneMgr {
         }
         return null;
     }
+    @Nullable
+    public List<Milestone> getUnlockedMilestones(@NotNull Double playtime) {
+        Milestone last = getMilestone(playtime);
+        if (last == null) return null;
+        int i = last.id();
+        List<Milestone> milestones = new ArrayList<>();
+        for (; i > 0; i--) {
+            Milestone m = getMilestone(i);
+            if (m == null) return null;
+            milestones.add(m);
+        }
+        if (milestones.size() != i) return null;
+        return milestones;
+    }
+    public int MILESTONE_COUNT() {
+        return milestones.size();
+    }
 }

@@ -2,7 +2,7 @@ package com.x_tornado10.lobby.utils.Invs.Items;
 
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -85,29 +85,6 @@ public class ItemGetter {
                 .hideTags(true)
                 .make();
     }
-    public List<ItemStack> getLocked() {
-        List<ItemStack> result = new ArrayList<>();
-        result.add(MILESTONE_1_LOCKED());
-        result.add(MILESTONE_4_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_5_LOCKED());
-        result.add(MILESTONE_8_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_2_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_3_LOCKED());
-        result.add(MILESTONE_6_LOCKED());
-        result.add(MILESTONE_PATH_LOCKED());
-        result.add(MILESTONE_7_LOCKED());
-        return result;
-    }
     public ItemStack REFRESH_BUTTON() {
         return ItemCreator.of(CompMaterial.GREEN_STAINED_GLASS_PANE).name(ChatColor.GREEN + "Refresh Stats").lore(ChatColor.GRAY + "Click to refresh all values!").make();
     }
@@ -117,29 +94,14 @@ public class ItemGetter {
     public ItemStack MILESTONE_PATH_LOCKED() {
         return ItemCreator.of(CompMaterial.IRON_NUGGET).name(String.valueOf(ChatColor.RED) + ChatColor.ITALIC + "Achievement Path locked").make();
     }
-    public ItemStack MILESTONE_1_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "10min").make();
+    public ItemStack MILESTONE_PATH_UNLOCKED() {
+        return ItemCreator.of(CompMaterial.GOLD_NUGGET).name(String.valueOf(ChatColor.of("#db912a")) + ChatColor.ITALIC + "Achievement Path locked").make();
     }
-    public ItemStack MILESTONE_2_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "1h").make();
+    public ItemStack PAGE_BACK() {
+        return ItemCreator.of(CompMaterial.GRAY_STAINED_GLASS_PANE).name(ChatColor.GRAY + "Last Page").make();
     }
-    public ItemStack MILESTONE_3_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "10h").make();
-    }
-    public ItemStack MILESTONE_4_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "24h").make();
-    }
-    public ItemStack MILESTONE_5_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "48h").make();
-    }
-    public ItemStack MILESTONE_6_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "72h").make();
-    }
-    public ItemStack MILESTONE_7_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "100h").make();
-    }
-    public ItemStack MILESTONE_8_LOCKED() {
-        return ItemCreator.of(CompMaterial.BLACK_CONCRETE).name(ChatColor.GRAY + "?").lore(ChatColor.GRAY + "10000h").make();
+    public ItemStack PAGE_NEXT() {
+        return ItemCreator.of(CompMaterial.GRAY_STAINED_GLASS_PANE).name(ChatColor.GRAY + "Next Page").make();
     }
     public static String formatMillis(long milliseconds) {
         long seconds = milliseconds / 1000;
