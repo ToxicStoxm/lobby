@@ -88,6 +88,7 @@ public class MilestoneMgr {
         return milestones;
     }
     public int MILESTONE_COUNT() {
+        plugin.getLogger().severe(String.valueOf(milestones.size()));
         return milestones.size();
     }
 }

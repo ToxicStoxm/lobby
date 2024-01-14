@@ -101,8 +101,8 @@ public class LobbyProfile extends Menu {
                 pages = true;
                 pagesC = i;
             }
-            plugin.getLogger().severe(pages + "     " + pagesC);
-            setTitle(ChatColor.DARK_GRAY + "Milestones");
+            plugin.getLogger().severe(pages + "     " + pagesC + "            " + i);
+            setTitle(ChatColor.DARK_GRAY + "Milestones (" + currentPage + "/" + pagesC + ")");
 
             lastPage = new Button() {
                 @Override
@@ -111,6 +111,7 @@ public class LobbyProfile extends Menu {
                         if (currentPage > 1) {
                             currentPage -= 1;
                             drawItems(player);
+                            setTitle(ChatColor.DARK_GRAY + "Milestones (" + currentPage + "/" + pagesC + ")");
                         }
                     }
                 }
@@ -129,6 +130,7 @@ public class LobbyProfile extends Menu {
                         if (currentPage < pagesC) {
                             currentPage += 1;
                             drawItems(player);
+                            setTitle(ChatColor.DARK_GRAY + "Milestones (" + currentPage + "/" + pagesC + ")");
                         }
                     }
                 }
