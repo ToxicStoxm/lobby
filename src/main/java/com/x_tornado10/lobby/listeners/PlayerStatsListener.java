@@ -7,6 +7,7 @@ import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.GroupManager;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
@@ -43,7 +44,7 @@ public class PlayerStatsListener implements Listener {
     private final HashMap<UUID, Date> last_update;
     private final Lobby plugin;
     private final MilestoneMgr milestoneMgr;
-    private final LuckPerms lpAPI;
+    private LuckPerms lpAPI;
     public PlayerStatsListener() {
         plugin = Lobby.getInstance();
         database = plugin.getDatabase();
@@ -215,6 +216,7 @@ public class PlayerStatsListener implements Listener {
     private Milestone checkMilestones(double playtime, Player p) {
         Milestone m = milestoneMgr.getMilestone(playtime);
         if (m == null) return null;
+        if (lpAPI == null) lpAPI = LuckPermsProvider.get();
         UserManager mgr = lpAPI.getUserManager();
         GroupManager gmgr = lpAPI.getGroupManager();
         User usr = mgr.getUser(p.getUniqueId());

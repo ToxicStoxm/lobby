@@ -15,6 +15,7 @@ public class Database extends SimpleDatabase {
         String host = parts[2].strip().replace("/","");
         String[] parts1 = parts[3].strip().split("/");
         setConnectUsingHikari(true);
+
         connect(host, Integer.parseInt(parts1[0]),parts1[1],credentials.get(1),credentials.get(2),"player_stats",true);
     }
 
