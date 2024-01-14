@@ -81,13 +81,13 @@ public class PlayerStatsListener implements Listener {
         last_update.put(p.getUniqueId(), new Date());
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(p);
-            playerStats.setLast_login(new Date());
             LocalDate date = (new Date(playerStats.getLast_login().getTime())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if (!date.plusDays(1).isEqual(LocalDate.now())) {
                 if (!date.plusDays(1).isEqual(LocalDate.now().plusDays(1))) playerStats.setLogin_streak(1);
             } else {
                 playerStats.setLogin_streak(playerStats.getLogin_streak()+1);
             }
+            playerStats.setLast_login(new Date());
             playerStats.setLogins(playerStats.getLogins()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
