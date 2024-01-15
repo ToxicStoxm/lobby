@@ -3,7 +3,6 @@ package com.x_tornado10.lobby.placeholderapi;
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
-import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -13,10 +12,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 public class PlaceHolderHook extends PlaceholderExpansion {
-    private final Lobby plugin;
     private final Database db;
     public PlaceHolderHook() {
-        plugin = Lobby.getInstance();
+        Lobby plugin = Lobby.getInstance();
         db = plugin.getDatabase();
     }
     @Override
@@ -56,11 +54,40 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             case "login_streak" -> String.valueOf(stats.getLogin_streak());
             case "logins" -> String.valueOf(stats.getLogins());
             case "chat_messages_send" -> String.valueOf(stats.getChat_messages_send());
-            case "playtime" -> String.valueOf(stats.getPlayer_kills());
+            case "playtime" -> formatSeconds(stats.getPlaytime() / 1000);
             default -> super.onRequest(player, params);
         };
     }
 
+    public static String formatSeconds(long seconds) {
+        int d = (int) (seconds / (24 * 3600));
+        seconds %= (24 * 3600);
+        int h = (int) (seconds / 3600);
+        seconds %= 3600;
+        int m = (int) (seconds / 60);
+        seconds %= 60;
+        int s = (int) seconds;
+
+        StringBuilder formattedTime = new StringBuilder();
+
+        if (d > 0) {
+            formattedTime.append(d).append("d ");
+        }
+
+        if (h > 0) {
+            formattedTime.append(h).append("h ");
+        }
+
+        if (m > 0) {
+            formattedTime.append(m).append("m ");
+        }
+
+        if (s > 0 || formattedTime.isEmpty()) {
+            formattedTime.append(s).append("s");
+        }
+
+        return formattedTime.toString().replaceAll(" $", "");
+    }
 
     public static void registerHook() {
         new PlaceHolderHook().register();

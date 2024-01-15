@@ -12,11 +12,13 @@ import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
+import com.x_tornado10.lobby.placeholderapi.PlaceHolderHook;
 import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Paths;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -128,6 +130,7 @@ public final class Lobby extends SimplePlugin {
         if (lobby != null) {
             lobby.setExecutor(new LobbyCommand());
         }
+        PlaceHolderHook.registerHook();
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 

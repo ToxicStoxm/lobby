@@ -6,6 +6,7 @@ import com.x_tornado10.lobby.utils.Invs.LobbyCompass;
 import com.x_tornado10.lobby.utils.Invs.LobbyPlayerStats;
 import com.x_tornado10.lobby.utils.Invs.LobbyProfile;
 import com.x_tornado10.lobby.utils.Item;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -403,6 +404,11 @@ public class LobbyListener implements Listener{
         if (e.getBlock().getType().equals(Material.SNOW) || e.getBlock().getType().equals(Material.SNOW_BLOCK)) {
             e.setCancelled(true);
         }
+    }
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e) {
+        String message = e.getMessage();
+        e.setMessage(PlaceholderAPI.setPlaceholders(e.getPlayer(), message));
     }
     private boolean isNotBuilder(Player p) {
         Lobby plugin = Lobby.getInstance();
