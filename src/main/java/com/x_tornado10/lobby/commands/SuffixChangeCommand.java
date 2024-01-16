@@ -35,7 +35,7 @@ public class SuffixChangeCommand implements CommandExecutor {
                         User usr = usrMgr.getUser(p.getName());
                         if (usr == null) return false;
                         String suffix = ChatColor.RESET + args[0].replace("%_%", " ") + ChatColor.RESET;
-                        if (suffix.length() > 16) {
+                        if (rawSuffix(suffix).length() > 20) {
                             p.sendMessage(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
                             return true;
                         }
@@ -61,7 +61,7 @@ public class SuffixChangeCommand implements CommandExecutor {
                     User usr = usrMgr.getUser(args[0]);
                     if (usr == null) return false;
                     String suffix = ChatColor.RESET + args[1].replace("%_%", " ") + ChatColor.RESET;
-                    if (suffix.length() > 16) {
+                    if (rawSuffix(suffix).length() > 20) {
                         plugin.getLogger().info(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
                         return true;
                     }
@@ -76,5 +76,8 @@ public class SuffixChangeCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+    private String rawSuffix(String suffix) {
+        return net.md_5.bungee.api.ChatColor.stripColor(suffix);
     }
 }
