@@ -87,8 +87,9 @@ public class PlayerStatsListener implements Listener {
                 playerStats.setLogin_streak(1);
                 logger.severe("test");
             } else {
+                Date date_raw_java = new Date(date_raw.getTime());
                 logger.severe(date_raw.toString());
-                LocalDate date = LocalDate.from(date_raw.toInstant().atZone(ZoneId.systemDefault()));
+                LocalDate date = LocalDate.from(date_raw_java.toInstant().atZone(ZoneId.systemDefault()));
                 LocalDate currentDate = LocalDate.now();
 
                 LocalDate datePlus1 = date.plusDays(1);
