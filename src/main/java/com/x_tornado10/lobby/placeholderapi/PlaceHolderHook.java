@@ -42,7 +42,7 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             return super.onRequest(player, params);
         }
         if (stats == null) {
-            stats = new PlayerStats(player.getName(),0,0,0,0,0,null,0,0,0,0);
+            stats = new PlayerStats(String.valueOf(player.getUniqueId()),0,0,0,0,0,null,0,0,0,0);
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -57,7 +57,7 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             case "login_streak" -> String.valueOf(stats.getLogin_streak());
             case "logins" -> String.valueOf(stats.getLogins());
             case "chat_messages_send" -> String.valueOf(stats.getChat_messages_send());
-            case "playtime" -> stats.getPlaytime() == 0 ? null : formatSeconds(stats.getPlaytime() / 1000);
+            case "playtime" -> formatSeconds(stats.getPlaytime() / 1000);
             case "prefix" -> plugin.getPrefix(player.getUniqueId());
             case "suffix" -> plugin.getSuffix(player.getUniqueId());
             default -> super.onRequest(player, params);
