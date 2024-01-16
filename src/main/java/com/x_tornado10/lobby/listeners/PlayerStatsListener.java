@@ -267,6 +267,7 @@ public class PlayerStatsListener implements Listener {
         return true;
     }
     public void updatePrefix(Player p) {
+        if (lpAPI == null) lpAPI = LuckPermsProvider.get();
         UserManager mgr = lpAPI.getUserManager();
         GroupManager gmgr = lpAPI.getGroupManager();
         User usr = mgr.getUser(p.getUniqueId());
