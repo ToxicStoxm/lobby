@@ -35,8 +35,16 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <finalName>${artifactId}-Bukkit-${version}</finalName>
+                    <finalName>${project.artifactId}-Bukkit-${project.version}</finalName>
                     <artifactSet>
                         <includes>
                             <include>${foundation.path}:Foundation*</include>

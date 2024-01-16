@@ -13,8 +13,9 @@ import java.text.SimpleDateFormat;
 
 public class PlaceHolderHook extends PlaceholderExpansion {
     private final Database db;
+    private final Lobby plugin;
     public PlaceHolderHook() {
-        Lobby plugin = Lobby.getInstance();
+        plugin = Lobby.getInstance();
         db = plugin.getDatabase();
     }
     @Override
@@ -55,6 +56,8 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             case "logins" -> String.valueOf(stats.getLogins());
             case "chat_messages_send" -> String.valueOf(stats.getChat_messages_send());
             case "playtime" -> formatSeconds(stats.getPlaytime() / 1000);
+            case "prefix" -> plugin.getPrefix(player.getUniqueId());
+            case "suffix" -> plugin.getSuffix(player.getUniqueId());
             default -> super.onRequest(player, params);
         };
     }

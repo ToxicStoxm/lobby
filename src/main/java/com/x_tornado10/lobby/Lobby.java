@@ -21,6 +21,7 @@ import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.group.GroupManager;
 import net.luckperms.api.model.user.User;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -179,6 +181,22 @@ public final class Lobby extends SimplePlugin {
         updatePrefix(p);
         userManager.saveUser(user);
         lpAPI.runUpdateTask();
+    }
+    public String getPrefix(UUID playerUUID) {
+        User user = lpAPI.getUserManager().getUser(playerUUID);
+        if (user == null) return "";
+        CachedMetaData metaData = user.getCachedData().getMetaData();
+        String prefix = metaData.getPrefix();
+        if (prefix != null && !prefix.isEmpty()) return prefix;
+        else return "";
+    }
+    public String getSuffix(UUID playerUUID) {
+        User user = lpAPI.getUserManager().getUser(playerUUID);
+        if (user == null) return "";
+        CachedMetaData metaData = user.getCachedData().getMetaData();
+        String suffix = metaData.getSuffix();
+        if (suffix != null && !suffix.isEmpty()) return suffix;
+        else return "";
     }
     public void updatePrefix(Player p) {
         UserManager mgr = lpAPI.getUserManager();
