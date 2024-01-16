@@ -70,7 +70,7 @@ public class PlayerStatsListener implements Listener {
         PlayerStats playerStats = database.findPlayerStatsByUUID(uuid.toString());
 
         if (playerStats == null) {
-            playerStats = new PlayerStats(uuid.toString(), 0, 0, 0, 0, 0, null,0,0, 0,0);
+            playerStats = new PlayerStats(uuid.toString(), 0, 0, 0, 0, 0, Date.from(LocalDate.now().minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()),0,0, 0,0);
             database.createPlayerStats(playerStats);
         }
 
@@ -85,10 +85,8 @@ public class PlayerStatsListener implements Listener {
             Date date_raw = playerStats.getLast_login();
             if (date_raw == null) {
                 playerStats.setLogin_streak(1);
-                logger.severe("test");
             } else {
                 Date date_raw_java = new Date(date_raw.getTime());
-                logger.severe(date_raw.toString());
                 LocalDate date = LocalDate.from(date_raw_java.toInstant().atZone(ZoneId.systemDefault()));
                 LocalDate currentDate = LocalDate.now();
 
@@ -102,8 +100,7 @@ public class PlayerStatsListener implements Listener {
                     }
                 }
             }
-
-            playerStats.setLast_login(new Date());
+            playerStats.setLast_login(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             playerStats.setLogins(playerStats.getLogins()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
