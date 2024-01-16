@@ -9,12 +9,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class UpdateLeaderboard {
     private final int delay;
     private final int cycle;
-    private final String command;
+    private final String[] commands;
 
-    public UpdateLeaderboard(int delay, int cycle, String command) {
+    public UpdateLeaderboard(int delay, int cycle, String[] commands) {
         this.delay = delay;
         this.cycle = cycle;
-        this.command = command;
+        this.commands = commands;
         update();
     }
 
@@ -24,7 +24,7 @@ public class UpdateLeaderboard {
         new BukkitRunnable() {
             @Override
             public void run() {
-                server.dispatchCommand(console, command);
+                for (String s : commands) server.dispatchCommand(console, s);
             }
         }.runTaskTimer(Lobby.getInstance(), delay, cycle);
 

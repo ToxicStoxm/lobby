@@ -143,7 +143,7 @@ public final class Lobby extends SimplePlugin {
             lobby.setExecutor(new LobbyCommand());
         }
         PlaceHolderHook.registerHook();
-        new UpdateLeaderboard(100, 100, "ajl updatealloffline lobby_playtime");
+        new UpdateLeaderboard(100, 100,  new String[]{"ajl updatealloffline lobby_playtime","ajl updatealloffline lobby_logins","ajl updatealloffline lobby_login_streak"});
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         LogFilter.blockedStrings = getStrings();

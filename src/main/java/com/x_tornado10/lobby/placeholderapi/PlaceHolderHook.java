@@ -57,7 +57,8 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             case "login_streak" -> String.valueOf(stats.getLogin_streak());
             case "logins" -> String.valueOf(stats.getLogins());
             case "chat_messages_send" -> String.valueOf(stats.getChat_messages_send());
-            case "playtime" -> formatSeconds(stats.getPlaytime() / 1000);
+            case "playtime" -> String.valueOf(stats.getPlaytime());
+            case "playtime_formatted" -> formatSeconds(stats.getPlaytime() / 1000);
             case "prefix" -> plugin.getPrefix(player.getUniqueId());
             case "suffix" -> plugin.getSuffix(player.getUniqueId());
             default -> super.onRequest(player, params);
