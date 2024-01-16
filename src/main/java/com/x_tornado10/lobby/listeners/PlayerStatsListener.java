@@ -124,6 +124,7 @@ public class PlayerStatsListener implements Listener {
         Player p = e.getPlayer();
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(p);
+            if (!last_update.containsKey(p.getUniqueId())) return;
             long d = playerStats.getPlaytime() + System.currentTimeMillis() - last_update.get(p.getUniqueId()).getTime();
             playerStats.setPlaytime(d);
             last_update.remove(p.getUniqueId());
