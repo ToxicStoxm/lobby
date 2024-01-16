@@ -284,6 +284,8 @@ public class PlayerStatsListener implements Listener {
                 }
             }
         }
+        mgr.saveUser(usr);
+        lpAPI.runUpdateTask();
     }
 
 }
