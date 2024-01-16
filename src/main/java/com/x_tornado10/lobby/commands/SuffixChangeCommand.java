@@ -34,6 +34,14 @@ public class SuffixChangeCommand implements CommandExecutor {
                         UserManager usrMgr = lpAPI.getUserManager();
                         User usr = usrMgr.getUser(p.getName());
                         if (usr == null) return false;
+                        if (args[0].strip().equals("&r")) {
+                            for (SuffixNode snode : usr.getNodes(NodeType.SUFFIX)) {
+                                usr.data().remove(snode);
+                            }
+                            usrMgr.saveUser(usr);
+                            lpAPI.runUpdateTask();
+                            return true;
+                        }
                         String suffix = ChatColor.RESET + args[0].replace("%_%", " ") + ChatColor.RESET;
                         if (rawSuffix(suffix).length() > 20) {
                             p.sendMessage(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
@@ -60,6 +68,14 @@ public class SuffixChangeCommand implements CommandExecutor {
                     UserManager usrMgr = lpAPI.getUserManager();
                     User usr = usrMgr.getUser(args[0]);
                     if (usr == null) return false;
+                    if (args[0].strip().equals("&r")) {
+                        for (SuffixNode snode : usr.getNodes(NodeType.SUFFIX)) {
+                            usr.data().remove(snode);
+                        }
+                        usrMgr.saveUser(usr);
+                        lpAPI.runUpdateTask();
+                        return true;
+                    }
                     String suffix = ChatColor.RESET + args[1].replace("%_%", " ") + ChatColor.RESET;
                     if (rawSuffix(suffix).length() > 20) {
                         plugin.getLogger().info(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
