@@ -57,7 +57,7 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             case "login_streak" -> String.valueOf(stats.getLogin_streak());
             case "logins" -> String.valueOf(stats.getLogins());
             case "chat_messages_send" -> String.valueOf(stats.getChat_messages_send());
-            case "playtime" -> formatSeconds(stats.getPlaytime() / 1000);
+            case "playtime" -> stats.getPlaytime() == 0 ? null : formatSeconds(stats.getPlaytime() / 1000);
             case "prefix" -> plugin.getPrefix(player.getUniqueId());
             case "suffix" -> plugin.getSuffix(player.getUniqueId());
             default -> super.onRequest(player, params);
@@ -65,7 +65,6 @@ public class PlaceHolderHook extends PlaceholderExpansion {
     }
 
     public static String formatSeconds(long seconds) {
-        if (seconds == 0) return null;
         int d = (int) (seconds / (24 * 3600));
         seconds %= (24 * 3600);
         int h = (int) (seconds / 3600);
