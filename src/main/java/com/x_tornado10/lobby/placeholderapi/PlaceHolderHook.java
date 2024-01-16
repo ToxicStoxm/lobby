@@ -41,7 +41,9 @@ public class PlaceHolderHook extends PlaceholderExpansion {
         } catch (SQLException e) {
             return super.onRequest(player, params);
         }
-        if (stats == null) return super.onRequest(player, params);
+        if (stats == null) {
+            stats = new PlayerStats(player.getName(),0,0,0,0,0,null,0,0,0,0);
+        }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -51,7 +53,7 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             case "mob_kills" -> String.valueOf(stats.getMob_kills());
             case "blocks_broken" -> String.valueOf(stats.getBlocks_broken());
             case "blocks_placed" -> String.valueOf(stats.getBlocks_placed());
-            case "last_login" -> dateFormat.format(stats.getLast_login());
+            case "last_login" -> stats.getLast_login() == null ? null : dateFormat.format(stats.getLast_login());
             case "login_streak" -> String.valueOf(stats.getLogin_streak());
             case "logins" -> String.valueOf(stats.getLogins());
             case "chat_messages_send" -> String.valueOf(stats.getChat_messages_send());
@@ -63,6 +65,7 @@ public class PlaceHolderHook extends PlaceholderExpansion {
     }
 
     public static String formatSeconds(long seconds) {
+        if (seconds == 0) return null;
         int d = (int) (seconds / (24 * 3600));
         seconds %= (24 * 3600);
         int h = (int) (seconds / 3600);
