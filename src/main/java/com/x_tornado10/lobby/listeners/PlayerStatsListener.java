@@ -70,7 +70,7 @@ public class PlayerStatsListener implements Listener {
         PlayerStats playerStats = database.findPlayerStatsByUUID(uuid.toString());
 
         if (playerStats == null) {
-            playerStats = new PlayerStats(uuid.toString(), 0, 0, 0, 0, 0, new Date(),0,0, 0,0);
+            playerStats = new PlayerStats(uuid.toString(), 0, 0, 0, 0, 0, null,0,0, 0,0);
             database.createPlayerStats(playerStats);
         }
 
@@ -82,12 +82,26 @@ public class PlayerStatsListener implements Listener {
         last_update.put(p.getUniqueId(), new Date());
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(p);
-            LocalDate date = (new Date(playerStats.getLast_login().getTime())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            if (!date.plusDays(1).isEqual(LocalDate.now())) {
-                if (!date.plusDays(1).isEqual(LocalDate.now().plusDays(1))) playerStats.setLogin_streak(1);
+            Date date_raw = playerStats.getLast_login();
+            if (date_raw == null) {
+                playerStats.setLogin_streak(1);
+                logger.severe("test");
             } else {
-                playerStats.setLogin_streak(playerStats.getLogin_streak()+1);
+                logger.severe(date_raw.toString());
+                LocalDate date = LocalDate.from(date_raw.toInstant().atZone(ZoneId.systemDefault()));
+                LocalDate currentDate = LocalDate.now();
+
+                LocalDate datePlus1 = date.plusDays(1);
+
+                if (!date.isEqual(currentDate)) {
+                    if (datePlus1.isEqual(currentDate)) {
+                        playerStats.setLogin_streak(playerStats.getLogin_streak() + 1);
+                    } else {
+                        playerStats.setLogin_streak(1);
+                    }
+                }
             }
+
             playerStats.setLast_login(new Date());
             playerStats.setLogins(playerStats.getLogins()+1);
             database.updatePlayerStats(playerStats);
