@@ -2,14 +2,10 @@ package com.x_tornado10.lobby.db;
 
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.mineacademy.fo.database.SimpleDatabase;
 
 import java.sql.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class Database extends SimpleDatabase {
 

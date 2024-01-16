@@ -2,6 +2,7 @@ package com.x_tornado10.lobby.commands;
 
 import com.x_tornado10.lobby.Lobby;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,10 @@ public class GrantRankCommand implements CommandExecutor {
                 if (args.length == 2) {
                     Player pl = Bukkit.getPlayer(args[0]);
                     if (pl == null) {
-                        p.sendMessage("Invalid Player!");
+                        p.sendMessage("Player is offline. May not work as intended!");
+                        OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
+                        p.sendMessage(player.getName() + " now inherits group " + args[1]);
+                        plugin.setPlayerGroup(player, args[1]);
                         return true;
                     }
                     p.sendMessage(pl.getName() + " now inherits group " + args[1]);

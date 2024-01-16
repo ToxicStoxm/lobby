@@ -3,6 +3,7 @@ package com.x_tornado10.lobby;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.tchristofferson.configupdater.ConfigUpdater;
+import com.x_tornado10.lobby.chat.filters.LogFilter;
 import com.x_tornado10.lobby.commands.GrantRankCommand;
 import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
 import com.x_tornado10.lobby.commands.LobbyCommand;
@@ -13,6 +14,7 @@ import com.x_tornado10.lobby.listeners.LobbyListener;
 import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.placeholderapi.PlaceHolderHook;
+import com.x_tornado10.lobby.updateLeaderboard.UpdateLeaderboard;
 import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Convertor;
@@ -33,8 +35,10 @@ import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -45,8 +49,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 
@@ -69,12 +75,16 @@ public final class Lobby extends SimplePlugin {
     private ItemGetter itemGetter;
     @Getter
     private MilestoneMgr milestonesMgr;
+    @Getter
+    private LogFilter logFilter;
 
     @Override
     protected void onPluginLoad() {
-        ButtonReturnBack.setMaterial(CompMaterial.RED_STAINED_GLASS_PANE);
+        logFilter = new LogFilter();
         super.onPluginLoad();
     }
+
+
 
     @Override
     public void onPluginStart() {
@@ -133,7 +143,24 @@ public final class Lobby extends SimplePlugin {
             lobby.setExecutor(new LobbyCommand());
         }
         PlaceHolderHook.registerHook();
+        new UpdateLeaderboard(100, 100, "ajl updatealloffline lobby_playtime");
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
+        LogFilter.blockedStrings = getStrings();
+
+        logFilter.registerFilter();
+    }
+
+    @NotNull
+    private static List<String> getStrings() {
+        List<String> blockedStrings = new ArrayList<>();
+        blockedStrings.add("Not all placeholders support updating offline players");
+        blockedStrings.add("[ajLeaderboards]");
+        blockedStrings.add("[OfflineUpdater]");
+        blockedStrings.add("You can check the progress by either checking the console, or running");
+        blockedStrings.add("Finished updating all offline players");
+        blockedStrings.add("Started update of");
+        return blockedStrings;
     }
 
     @Override
@@ -182,8 +209,29 @@ public final class Lobby extends SimplePlugin {
         userManager.saveUser(user);
         lpAPI.runUpdateTask();
     }
+    public void setPlayerGroup(OfflinePlayer p, String groupName) {
+        UserManager userManager = lpAPI.getUserManager();
+        User user = userManager.getUser(p.getUniqueId());
+        if (user == null) return;
+        GroupManager groupManager = lpAPI.getGroupManager();
+        Group group = groupManager.getGroup(groupName);
+        if (group == null) return;
+        for (InheritanceNode node : user.getNodes(NodeType.INHERITANCE)) {
+            user.data().remove(node);
+        }
+        InheritanceNode inheritanceNode = InheritanceNode.builder(group).build();
+        user.data().add(inheritanceNode);
+        user.setPrimaryGroup(groupName);
+        updatePrefix(p);
+        userManager.saveUser(user);
+        lpAPI.runUpdateTask();
+    }
     public String getPrefix(UUID playerUUID) {
-        User user = lpAPI.getUserManager().getUser(playerUUID);
+        UserManager userManager = lpAPI.getUserManager();
+        User user = userManager.getUser(playerUUID);
+        if (user == null) return "";
+        userManager.loadUser(user.getUniqueId());
+        user = userManager.getUser(playerUUID);
         if (user == null) return "";
         CachedMetaData metaData = user.getCachedData().getMetaData();
         String prefix = metaData.getPrefix();
@@ -202,6 +250,10 @@ public final class Lobby extends SimplePlugin {
         UserManager mgr = lpAPI.getUserManager();
         GroupManager gmgr = lpAPI.getGroupManager();
         User usr = mgr.getUser(p.getUniqueId());
+        if (!mgr.isLoaded(p.getUniqueId())) {
+            mgr.loadUser(p.getUniqueId());
+            usr = mgr.getUser(p.getUniqueId());
+        }
         if (usr == null) return;
         for (PrefixNode node0 : usr.getNodes(NodeType.PREFIX)) {
             for (PrefixNode node : Objects.requireNonNull(gmgr.getGroup(usr.getPrimaryGroup())).getNodes(NodeType.PREFIX)) {
@@ -216,5 +268,32 @@ public final class Lobby extends SimplePlugin {
                 }
             }
         }
+        mgr.saveUser(usr);
+        lpAPI.runUpdateTask();
+    }
+    public void updatePrefix(OfflinePlayer p) {
+        UserManager mgr = lpAPI.getUserManager();
+        GroupManager gmgr = lpAPI.getGroupManager();
+        User usr = mgr.getUser(p.getUniqueId());
+        if (!mgr.isLoaded(p.getUniqueId())) {
+            mgr.loadUser(p.getUniqueId());
+            usr = mgr.getUser(p.getUniqueId());
+        }
+        if (usr == null) return;
+        for (PrefixNode node0 : usr.getNodes(NodeType.PREFIX)) {
+            for (PrefixNode node : Objects.requireNonNull(gmgr.getGroup(usr.getPrimaryGroup())).getNodes(NodeType.PREFIX)) {
+                if (Convertor.containsHexCode(node0.getMetaValue())) {
+                    String color = Convertor.extractHexCode(node0.getMetaValue());
+                    for (Node n : usr.getNodes()) {
+                        if (n.getType() == NodeType.PREFIX) {
+                            usr.data().remove(n);
+                        }
+                    }
+                    usr.data().add(PrefixNode.builder(Convertor.replaceHexCodes(node.getMetaValue(), color), 5).build());
+                }
+            }
+        }
+        mgr.saveUser(usr);
+        lpAPI.runUpdateTask();
     }
 }
