@@ -3,8 +3,12 @@ package com.x_tornado10.lobby.listeners;
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.loops.ActionBarDisplay;
 import com.x_tornado10.lobby.utils.Item;
+import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Perms;
+import de.themoep.minedown.MineDown;
+import me.clip.placeholderapi.libs.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,7 +53,8 @@ public class JoinListener implements Listener {
         inv(p);
         if (plugin.checkGroup(p, "default")) {
             plugin.setPlayerGroup(p,"player");
-            p.sendTitle("", "", 1, 1, 1);
+            p.spigot().sendMessage(new MineDown("&#ffffff-##1a77c4&Hey " + p.getName() + ", welcome to the Crafti-Servi-Network!").toComponent());
+            p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 999999999,1);
         }
         displays.put(p.getUniqueId(), new ActionBarDisplay(p,join_msg));
     }
