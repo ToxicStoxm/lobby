@@ -1,8 +1,13 @@
 package com.x_tornado10.lobby.utils.statics;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import lombok.NonNull;
+import net.md_5.bungee.api.ChatColor;
 
 public class Convertor {
     public static String darkenHexColor(String hexColor, double factor) {
@@ -38,6 +43,31 @@ public class Convertor {
         Pattern pattern = Pattern.compile("#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})");
         Matcher matcher = pattern.matcher(input);
         return matcher.find() ? matcher.group() : null;
+    }
+    @NonNull
+    public static String formatMessage(@NonNull String input) {
+        if (!containsHexCode(input)) return input;
+        List<String> parts = extractHexCodeParts(input);
+
+        String hexColorCode = extractHexCode(input);
+
+        if (hexColorCode == null) return input;
+        String chatColor = ChatColor.of(hexColorCode).toString();
+
+        return parts.get(0) + chatColor + parts.get(1);
+    }
+    public static List<String> extractHexCodeParts(String input) {
+        List<String> result = new ArrayList<>();
+        Pattern pattern = Pattern.compile("#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            result.add(input.substring(0, matcher.start()));
+            result.add(input.substring(matcher.end()));
+            break;
+        }
+
+        return result;
     }
     public static double DEFAULT = 0.2;
     public static int TITLE_FADEIN = 20;

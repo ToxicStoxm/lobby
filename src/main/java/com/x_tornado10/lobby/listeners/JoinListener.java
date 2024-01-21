@@ -1,19 +1,21 @@
 package com.x_tornado10.lobby.listeners;
 
+import com.comphenix.protocol.PacketType;
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.loops.ActionBarDisplay;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Perms;
 import de.themoep.minedown.MineDown;
-import me.clip.placeholderapi.libs.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.md_5.bungee.api.chat.TextComponent;
+
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -35,9 +37,17 @@ public class JoinListener implements Listener {
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        lobby(e.getPlayer());
+        lobby(e.getPlayer(), e);
     }
-    private void lobby(Player p) {
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        Player p = e.getPlayer();
+        e.setQuitMessage("");
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            pl.spigot().sendMessage(MineDown.parse( Convertor.formatMessage(plugin.getPrefix(p.getUniqueId())) + p.getName() + Convertor.formatMessage(plugin.getSuffix(p.getUniqueId())) + " &#ffffff-#1a77c4&left the lobby"));
+        }
+    }
+    private void lobby(Player p, PlayerJoinEvent event) {
         JoinListener.tpSpawn(p);
         p.setFoodLevel(20);
         p.setTotalExperience(0);
@@ -53,8 +63,12 @@ public class JoinListener implements Listener {
         inv(p);
         if (plugin.checkGroup(p, "default")) {
             plugin.setPlayerGroup(p,"player");
-            p.spigot().sendMessage(new MineDown("&#ffffff-##1a77c4&Hey " + p.getName() + ", welcome to the Crafti-Servi-Network!").toComponent());
+            p.spigot().sendMessage(new MineDown("&#ffffff-#1a77c4&Hey " + p.getName() + ", welcome to the Crafti-Servi-Network!").toComponent());
             p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 999999999,1);
+        }
+        event.setJoinMessage("");
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            pl.spigot().sendMessage(MineDown.parse( Convertor.formatMessage(plugin.getPrefix(p.getUniqueId())) + p.getName() + Convertor.formatMessage(plugin.getSuffix(p.getUniqueId())) + " &#ffffff-#1a77c4&joined the lobby"));
         }
         displays.put(p.getUniqueId(), new ActionBarDisplay(p,join_msg));
     }

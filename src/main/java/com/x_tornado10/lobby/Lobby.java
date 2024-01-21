@@ -4,10 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import com.x_tornado10.lobby.chat.filters.LogFilter;
-import com.x_tornado10.lobby.commands.GrantRankCommand;
-import com.x_tornado10.lobby.commands.GrantRankCommandTabCompletor;
-import com.x_tornado10.lobby.commands.LobbyCommand;
-import com.x_tornado10.lobby.commands.SuffixChangeCommand;
+import com.x_tornado10.lobby.commands.*;
 import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.listeners.LobbyListener;
@@ -134,6 +131,10 @@ public final class Lobby extends SimplePlugin {
         PluginCommand setSuffix = Bukkit.getPluginCommand("setsuffix");
         if (setSuffix != null) {
             setSuffix.setExecutor(new SuffixChangeCommand());
+        }
+        PluginCommand rankInfo = Bukkit.getPluginCommand("rankinfo");
+        if (rankInfo != null) {
+            rankInfo.setExecutor(new RankInfo());
         }
         lpAPI = LuckPermsProvider.get();
         Bukkit.getPluginManager().registerEvents(joinListener, this);

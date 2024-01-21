@@ -23,6 +23,11 @@ commands:
       - setsuffx
     description: Set your own Suffix
     permission: lobby.player
+  rankinfo:
+    aliases:
+      - rinfo
+    description: Display rank information
+    permission: lobby.player
 depend:
   - LuckPerms
 permissions:

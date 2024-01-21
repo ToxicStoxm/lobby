@@ -412,6 +412,6 @@ public class LobbyListener implements Listener{
     }
     private boolean isNotBuilder(Player p) {
         Lobby plugin = Lobby.getInstance();
-        return !plugin.checkGroup(p, "builder");
+        return !(plugin.checkGroup(p, "builder") || plugin.checkGroup(p, "owner"));
     }
 }
