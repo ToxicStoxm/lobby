@@ -65,6 +65,7 @@ public class LobbyPlayerStats extends Menu {
         super.onPostDisplay(viewer);
     }
     private void drawItems() {
+        if  (getViewer() == null) return;
         for (Integer i : Item.BOUNDS26) {
             if (i != getReturnButtonPosition() && i != 25) {
                 setItem(i, Item.BOUNDS());

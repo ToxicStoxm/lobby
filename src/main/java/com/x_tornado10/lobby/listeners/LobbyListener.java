@@ -6,13 +6,15 @@ import com.x_tornado10.lobby.utils.Invs.LobbyCompass;
 import com.x_tornado10.lobby.utils.Invs.LobbyPlayerStats;
 import com.x_tornado10.lobby.utils.Invs.LobbyProfile;
 import com.x_tornado10.lobby.utils.Item;
+import de.themoep.minedown.adventure.MineDown;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.TextComponent;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -30,7 +32,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.FlowerPot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -405,11 +406,18 @@ public class LobbyListener implements Listener{
             e.setCancelled(true);
         }
     }
+
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent e) {
-        String message = e.getMessage();
-        e.setMessage(PlaceholderAPI.setPlaceholders(e.getPlayer(), message));
+    public void onChat(AsyncChatEvent event) {
+        Player p = event.getPlayer();
+        TextComponent textComponent = (TextComponent) event.message();
+        if (plugin.checkGroup(p, "csp") || plugin.checkGroup(p,"cs+")) {
+            event.message(MineDown.parse(PlaceholderAPI.setPlaceholders(event.getPlayer(), textComponent.content())));
+        } else {
+            event.message(textComponent.content(PlaceholderAPI.setPlaceholders(p, textComponent.content())));
+        }
     }
+
     private boolean isNotBuilder(Player p) {
         Lobby plugin = Lobby.getInstance();
         return !(plugin.checkGroup(p, "builder") || plugin.checkGroup(p, "owner"));

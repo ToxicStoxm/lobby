@@ -149,6 +149,7 @@ public class LobbyProfile extends Menu {
         }
 
         private void drawItems(Player p) {
+            if  (getViewer() == null) return;
             if (pages) {
                 if (currentPage == 1) {
                     for (Integer i : Item.MILESTONE_BOUNDS) {

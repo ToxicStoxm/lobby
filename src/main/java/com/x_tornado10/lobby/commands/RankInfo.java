@@ -1,10 +1,11 @@
 package com.x_tornado10.lobby.commands;
 
-import de.themoep.minedown.MineDown;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import com.x_tornado10.lobby.Lobby;
+import de.themoep.minedown.adventure.MineDown;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,10 +22,11 @@ public class RankInfo implements CommandExecutor {
         }
 
         p.playSound(p, Sound.ENTITY_VILLAGER_AMBIENT, 999999999, 1);
-        BaseComponent[] component = new ComponentBuilder( "__&#ffffff-#1a77c4&Click here for rank info!__")
-                .event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://crafti-servi.com//plugin-resources/craftiservi/Final_Chart.png"))
-                .create();
-        p.spigot().sendMessage(MineDown.parse(MineDown.stringify(component)));
+        TextComponent component =  Component.text("")
+                .append(MineDown.parse("__&#ffffff-#1a77c4&Click here for rank info!__"))
+                    .clickEvent(ClickEvent.openUrl("https://crafti-servi.com//plugin-resources/craftiservi/Final_Chart.png"))
+                            .hoverEvent(HoverEvent.showText(Component.text("").append(MineDown.parse("&#ffffff-#1a77c4&/rankinfo"))));
+        Lobby.getInstance().adventure().player(p).sendMessage(component);
         return true;
     }
 }

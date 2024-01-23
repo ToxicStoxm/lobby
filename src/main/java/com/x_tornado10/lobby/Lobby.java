@@ -16,8 +16,10 @@ import com.x_tornado10.lobby.utils.Invs.Items.ItemGetter;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Paths;
+import de.themoep.minedown.MineDown;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
+import lombok.NonNull;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedMetaData;
@@ -30,11 +32,13 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.query.QueryOptions;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
@@ -80,7 +84,15 @@ public final class Lobby extends SimplePlugin {
         logFilter = new LogFilter();
         super.onPluginLoad();
     }
+    private BukkitAudiences adventure;
 
+
+    public @NonNull BukkitAudiences adventure() {
+        if(this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return this.adventure;
+    }
 
 
     @Override
@@ -150,6 +162,8 @@ public final class Lobby extends SimplePlugin {
         LogFilter.blockedStrings = getStrings();
 
         logFilter.registerFilter();
+
+        this.adventure = BukkitAudiences.create(this);
     }
 
     @NotNull
@@ -167,6 +181,10 @@ public final class Lobby extends SimplePlugin {
     @Override
     public void onPluginStop() {
         // Plugin shutdown logic
+        if(this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
     }
 
@@ -175,6 +193,16 @@ public final class Lobby extends SimplePlugin {
         out.writeUTF("Connect");
         out.writeUTF(serverName);
         player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.spigot().sendMessage(MineDown.parse("&#ffffff-#1a77c4&>> " + player.getName() + " joined '" + serverName + "'"));
+                }
+            }
+        }.runTaskLater(this, 5);
+
     }
 
     public boolean hasPermission(Player p, String permission) {

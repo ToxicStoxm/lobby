@@ -1,13 +1,12 @@
 package com.x_tornado10.lobby.listeners;
 
-import com.comphenix.protocol.PacketType;
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.loops.ActionBarDisplay;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Perms;
-import de.themoep.minedown.MineDown;
 
+import de.themoep.minedown.MineDown;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -68,7 +67,7 @@ public class JoinListener implements Listener {
         }
         event.setJoinMessage("");
         for (Player pl : Bukkit.getOnlinePlayers()) {
-            pl.spigot().sendMessage(MineDown.parse( Convertor.formatMessage(plugin.getPrefix(p.getUniqueId())) + p.getName() + Convertor.formatMessage(plugin.getSuffix(p.getUniqueId())) + " &#ffffff-#1a77c4&joined the lobby"));
+            pl.spigot().sendMessage(MineDown.parse(Convertor.formatMessage(plugin.getPrefix(p.getUniqueId())) + p.getName() + Convertor.formatMessage(plugin.getSuffix(p.getUniqueId())) + " &#ffffff-#1a77c4&joined the lobby"));
         }
         displays.put(p.getUniqueId(), new ActionBarDisplay(p,join_msg));
     }
