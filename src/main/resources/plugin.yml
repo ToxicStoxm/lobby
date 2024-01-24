@@ -12,15 +12,9 @@ commands:
     description: teleports you to the lobby
     permission: lobby.player
   setrank:
-    aliases:
-      - rank
-      - setr
     description: Grants a rank to players
     permission: lobby.admin
   setsuffix:
-    aliases:
-      - suffix
-      - setsuffx
     description: Set your own Suffix
     permission: lobby.player
   rankinfo:
