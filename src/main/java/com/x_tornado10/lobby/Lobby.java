@@ -26,6 +26,7 @@ import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Unmodifiable;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 
@@ -151,6 +153,25 @@ public final class Lobby extends SimplePlugin {
         if (!gm.isLoaded(groupName)) gm.loadGroup(groupName);
         Group group = gm.getGroup(groupName);
         return usr.getInheritedGroups(QueryOptions.defaultContextualOptions()).contains(group);
+    }
+    public boolean checkGroups (Player p, String[] groupNames) {
+        if (lpAPI == null) lpAPI = LuckPermsProvider.get();
+        User usr = lpAPI.getUserManager().getUser(p.getUniqueId());
+        GroupManager gm = lpAPI.getGroupManager();
+        if (usr == null) return true;
+        @org.checkerframework.checker.nullness.qual.NonNull @Unmodifiable Collection<Group> g = usr.getInheritedGroups(QueryOptions.defaultContextualOptions());
+        for (String groupName : groupNames) {
+            if (!gm.isLoaded(groupName)) gm.loadGroup(groupName);
+            Group group = gm.getGroup(groupName);
+            if (g.contains(group)) return true;
+        }
+        return false;
+    }
+    public boolean hasPremium(Player p) {
+        return checkGroups(p, new String[]{"csp","cs+"});
+    }
+    public boolean hasModeration(Player p) {
+        return checkGroups(p, new String[]{"owner","builder"});
     }
     public void setPlayerGroup(Player p, String groupName) {
         UserManager userManager = lpAPI.getUserManager();
