@@ -25,7 +25,7 @@ public class SuffixChangeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (commandSender instanceof Player p) {
-            if (plugin.checkGroup(p, "cs+") || plugin.checkGroup(p, "csp")) {
+            if (plugin.hasPremium(p)) {
                 switch (args.length) {
                     case 0 -> p.sendMessage(ChatColor.RED + "Please provide a new suffix!");
                     case 1 -> {

@@ -114,7 +114,7 @@ public class LobbyListener implements Listener{
 
         if (isInPredefinedAreaOpen(p.getLocation())) {
 
-            if (plugin.checkGroup(p,"csp") || plugin.checkGroup(p,"cs+") || !isNotBuilder(p)) {
+            if (plugin.hasModeration(p) || plugin.hasPremium(p)) {
                 if (doorOpening || doorOpen) return;
                 if (doorClosing) doorClosing = false;
                 doorOpening = true;
@@ -182,7 +182,7 @@ public class LobbyListener implements Listener{
             if (doorOpening && !doorClosing) break;
             for (Location ignored : entry.getValue()) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (plugin.checkGroup(p, "csp") || plugin.checkGroup(p, "cs+") || !isNotBuilder(p) ) {
+                    if (plugin.hasModeration(p) || plugin.hasPremium(p)) {
                         if (isInPredefinedAreaOpen(p.getLocation())) return false;
                     }
                 }
@@ -194,7 +194,7 @@ public class LobbyListener implements Listener{
                         if (doorOpening && !doorClosing) cancel();
                         for (Location ignored : entry.getValue()) {
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (plugin.checkGroup(p, "csp") || plugin.checkGroup(p, "cs+") || !isNotBuilder(p) ) {
+                                if (plugin.hasModeration(p) || plugin.hasPremium(p)) {
                                     if (isInPredefinedAreaOpen(p.getLocation())) {
                                         cancel();
                                         err[0] = true;
@@ -305,7 +305,12 @@ public class LobbyListener implements Listener{
             if (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
                 Block clickedBlock = e.getClickedBlock();
                 if (clickedBlock != null && action == Action.RIGHT_CLICK_BLOCK) {
-                    if (clickedBlock.getType().toString().contains("TRAPDOOR") || clickedBlock.getType().equals(Material.FLOWER_POT) || clickedBlock.getType().equals(Material.COMPOSTER) || clickedBlock.getType().name().startsWith("POTTED_")) {
+                    Material clickedBlockType = clickedBlock.getType();
+                    if (clickedBlockType.toString().contains("TRAPDOOR") ||
+                            clickedBlockType.equals(Material.FLOWER_POT) ||
+                            clickedBlockType.equals(Material.COMPOSTER) ||
+                            clickedBlockType.name().startsWith("POTTED_") ||
+                            clickedBlockType.equals(Material.BELL)) {
                         if (isNotBuilder(p)) e.setCancelled(true);
                     }
                 }
@@ -334,7 +339,10 @@ public class LobbyListener implements Listener{
     }
 
     private boolean isValidAction(Action action) {
-        return action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK);
+        return action.equals(Action.RIGHT_CLICK_AIR) ||
+                action.equals(Action.RIGHT_CLICK_BLOCK) ||
+                action.equals(Action.LEFT_CLICK_AIR) ||
+                action.equals(Action.LEFT_CLICK_BLOCK);
     }
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
@@ -411,15 +419,25 @@ public class LobbyListener implements Listener{
     public void onChat(AsyncChatEvent event) {
         Player p = event.getPlayer();
         TextComponent textComponent = (TextComponent) event.message();
-        if (plugin.checkGroup(p, "csp") || plugin.checkGroup(p,"cs+")) {
-            event.message(MineDown.parse(PlaceholderAPI.setPlaceholders(event.getPlayer(), textComponent.content())));
+        if (plugin.hasPremium(p)) {
+            try {
+                event.message(MineDown.parse(PlaceholderAPI.setPlaceholders(event.getPlayer(), textComponent.content())));
+            } catch (Exception ignored) {
+                p.sendMessage(ChatColor.RED + "Failed to parse Minedown Syntax! If you believe this is an error please contact the server admins!");
+                event.setCancelled(true);
+            }
         } else {
-            event.message(textComponent.content(PlaceholderAPI.setPlaceholders(p, textComponent.content())));
+            try {
+                event.message(textComponent.content(PlaceholderAPI.setPlaceholders(p, textComponent.content())));
+            } catch (Exception ignored) {
+                p.sendMessage(ChatColor.RED + "Failed to parse Minedown Syntax! If you believe this is an error please contact the server admins!");
+                event.setCancelled(true);
+            }
         }
     }
 
     private boolean isNotBuilder(Player p) {
         Lobby plugin = Lobby.getInstance();
-        return !(plugin.checkGroup(p, "builder") || plugin.checkGroup(p, "owner"));
+        return !plugin.hasModeration(p);
     }
 }

@@ -40,6 +40,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -49,10 +50,7 @@ import org.mineacademy.fo.remain.CompMaterial;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -193,10 +191,10 @@ public final class Lobby extends SimplePlugin {
         out.writeUTF("Connect");
         out.writeUTF(serverName);
         player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (player.isOnline()) return;
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.spigot().sendMessage(MineDown.parse("&#ffffff-#1a77c4&>> " + player.getName() + " joined '" + serverName + "'"));
                 }
@@ -221,6 +219,19 @@ public final class Lobby extends SimplePlugin {
         Group group = gm.getGroup(groupName);
         return usr.getInheritedGroups(QueryOptions.defaultContextualOptions()).contains(group);
     }
+    public boolean checkGroups (Player p, String[] groupNames) {
+        if (lpAPI == null) lpAPI = LuckPermsProvider.get();
+        User usr = lpAPI.getUserManager().getUser(p.getUniqueId());
+        GroupManager gm = lpAPI.getGroupManager();
+        if (usr == null) return true;
+        @org.checkerframework.checker.nullness.qual.NonNull @Unmodifiable Collection<Group> g = usr.getInheritedGroups(QueryOptions.defaultContextualOptions());
+        for (String groupName : groupNames) {
+            if (!gm.isLoaded(groupName)) gm.loadGroup(groupName);
+            Group group = gm.getGroup(groupName);
+            if (g.contains(group)) return true;
+        }
+        return false;
+    }
     public void setPlayerGroup(Player p, String groupName) {
         UserManager userManager = lpAPI.getUserManager();
         User user = userManager.getUser(p.getUniqueId());
@@ -237,6 +248,12 @@ public final class Lobby extends SimplePlugin {
         updatePrefix(p);
         userManager.saveUser(user);
         lpAPI.runUpdateTask();
+    }
+    public boolean hasPremium(Player p) {
+        return checkGroups(p, new String[]{"csp","cs+"});
+    }
+    public boolean hasModeration(Player p) {
+        return checkGroups(p, new String[]{"owner","builder"});
     }
     public void setPlayerGroup(OfflinePlayer p, String groupName) {
         UserManager userManager = lpAPI.getUserManager();

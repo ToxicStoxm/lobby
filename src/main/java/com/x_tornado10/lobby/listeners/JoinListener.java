@@ -58,7 +58,7 @@ public class JoinListener implements Listener {
             p.setLevel(0);
         }
         p.setGameMode(GameMode.ADVENTURE);
-        if (plugin.checkGroup(p, "csp") || plugin.checkGroup(p, "cs+")) p.setAllowFlight(true);
+        if (plugin.hasPremium(p)) p.setAllowFlight(true);
         inv(p);
         if (plugin.checkGroup(p, "default")) {
             plugin.setPlayerGroup(p,"player");

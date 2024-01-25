@@ -149,7 +149,6 @@ public class LobbyProfile extends Menu {
         }
 
         private void drawItems(Player p) {
-            if  (getViewer() == null) return;
             if (pages) {
                 if (currentPage == 1) {
                     for (Integer i : Item.MILESTONE_BOUNDS) {
@@ -297,6 +296,7 @@ public class LobbyProfile extends Menu {
         }
 
         private void drawItems() {
+            if (!p.getOpenInventory().getTitle().contains("Stats")) return;
             for (Integer i : Item.BOUNDS26) {
                 if (i != getReturnButtonPosition() && i != 25) {
                         setItem(i, Item.BOUNDS());
@@ -320,6 +320,7 @@ public class LobbyProfile extends Menu {
         }
 
         private void refresh() {
+            if (!p.getOpenInventory().getTitle().contains("Stats")) return;
             setTitle(ChatColor.DARK_GRAY + "Refreshing stats...");
             ItemStack item = Lobby.getInstance().getItemGetter().REFRESHING_PLACEHOLDER();
             if (item != null) {
@@ -332,10 +333,10 @@ public class LobbyProfile extends Menu {
                 @Override
                 public void run() {
                     try {
+                        if (!p.getOpenInventory().getTitle().contains("stats")) return;
                         setTitle(ChatColor.DARK_GRAY + "Stats");
                         drawItems();
                     } catch (Exception ignored) {
-
                     }
                 }
             }.runTaskLater(Lobby.getInstance(), 20);

@@ -50,6 +50,7 @@ public class GrantRankCommand implements CommandExecutor {
                 }
                 logger.info(pl.getName() + " now inherits group " + args[1]);
                 plugin.setPlayerGroup(pl, args[1]);
+                if (plugin.hasPremium(pl)) pl.setAllowFlight(true);
             } else {
                 logger.info("Wrong syntax!");
                 return true;

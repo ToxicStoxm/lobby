@@ -45,7 +45,7 @@ public class LobbyPlayerStats extends Menu {
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
                 if (System.currentTimeMillis() - cooldown >= 1500) {
                     cooldown = System.currentTimeMillis();
-                    refresh();
+                    refresh(player);
                 } else {
                     player.playSound(player, Sound.BLOCK_ANVIL_PLACE, 999999999, 1);
                     player.sendMessage(ChatColor.RED + "Please wait before refreshing again!");
@@ -85,7 +85,8 @@ public class LobbyPlayerStats extends Menu {
                 .skullOwner(p.getName())
                 .make());
     }
-    private void refresh() {
+    private void refresh(Player p) {
+        if (!p.getOpenInventory().getTitle().contains("Stats")) return;
         setTitle(ChatColor.DARK_GRAY + "Refreshing stats...");
         ItemStack item = Lobby.getInstance().getItemGetter().REFRESHING_PLACEHOLDER();
         if (item != null) {
@@ -98,6 +99,7 @@ public class LobbyPlayerStats extends Menu {
             @Override
             public void run() {
                 try {
+                    if (!p.getOpenInventory().getTitle().contains("stats")) return;
                     setTitle(ChatColor.DARK_GRAY + "Stats");
                     drawItems();
                 } catch (Exception ignored) {
