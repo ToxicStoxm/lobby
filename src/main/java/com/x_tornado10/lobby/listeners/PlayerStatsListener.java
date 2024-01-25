@@ -6,7 +6,9 @@ import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import com.x_tornado10.lobby.utils.statics.Convertor;
+import de.themoep.minedown.adventure.MineDown;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.TextComponent;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -169,6 +171,22 @@ public class PlayerStatsListener implements Listener {
         } catch (SQLException ex) {
             logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
+        }
+        TextComponent textComponent = (TextComponent) e.message();
+        if (plugin.hasPremium(p)) {
+            try {
+                e.message(MineDown.parse(PlaceholderAPI.setPlaceholders(e.getPlayer(), textComponent.content())));
+            } catch (Exception ignored) {
+                p.sendMessage(org.bukkit.ChatColor.RED + "Failed to parse Minedown Syntax! If you believe this is an error please contact the server admins!");
+                e.setCancelled(true);
+            }
+        } else {
+            try {
+                e.message(textComponent.content(PlaceholderAPI.setPlaceholders(p, textComponent.content())));
+            } catch (Exception ignored) {
+                p.sendMessage(org.bukkit.ChatColor.RED + "Failed to parse Minedown Syntax! If you believe this is an error please contact the server admins!");
+                e.setCancelled(true);
+            }
         }
     }
     @EventHandler
