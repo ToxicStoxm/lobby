@@ -31,4 +31,7 @@ public class ConfigMgr {
         result.add(config.getString(Paths.db_password));
         return  result;
     }
+    public boolean disableEnd() {
+        return config.getBoolean(Paths.disable_end);
+    }
 }

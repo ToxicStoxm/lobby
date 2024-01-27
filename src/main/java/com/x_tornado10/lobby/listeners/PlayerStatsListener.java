@@ -324,6 +324,7 @@ public class PlayerStatsListener implements Listener {
 
     @EventHandler
     public void onPlayerPortal(PlayerPortalEvent event) {
+        if (!plugin.getConfigMgr().disableEnd()) return;
         if (event.getCause() == PlayerPortalEvent.TeleportCause.END_PORTAL) {
             Player player = event.getPlayer();
 

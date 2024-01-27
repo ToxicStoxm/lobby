@@ -29,6 +29,7 @@ public class Paths {
     public static String door_2_y = "Door.2.Y";
     public static String door_2_z = "Door.2.Z";
     public static String door_world = "Door.World";
+    public static String disable_end = "disable-end";
 
     public static String plPath;
     public static List<String> plFiles = new ArrayList<>();
