@@ -20,6 +20,7 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.PrefixNode;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,10 +29,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
@@ -321,6 +320,16 @@ public class PlayerStatsListener implements Listener {
         }
         mgr.saveUser(usr);
         lpAPI.runUpdateTask();
+    }
+
+    @EventHandler
+    public void onPlayerPortal(PlayerPortalEvent event) {
+        if (event.getCause() == PlayerPortalEvent.TeleportCause.END_PORTAL) {
+            Player player = event.getPlayer();
+
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "You can't enter the End Portal (End opens with the End-Event)!");
+        }
     }
 
 }
