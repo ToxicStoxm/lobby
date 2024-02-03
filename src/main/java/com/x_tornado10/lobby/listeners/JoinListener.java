@@ -1,7 +1,9 @@
 package com.x_tornado10.lobby.listeners;
 
 import com.x_tornado10.lobby.Lobby;
+import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.loops.ActionBarDisplay;
+import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Perms;
@@ -47,6 +49,26 @@ public class JoinListener implements Listener {
         }
     }
     private void lobby(Player p, PlayerJoinEvent event) {
+        Database db = plugin.getDatabase();
+        try {
+            if (db.findPlayerStatsByUUID(String.valueOf(p.getUniqueId())) == null) {
+                db.createPlayerStats(new PlayerStats(
+                        String.valueOf(p.getUniqueId()),
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        new Date(),
+                        0,
+                        0,
+                        0,
+                        0
+                ));
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Encountered an error while communicating with the database! Please restart the server!");
+        }
         JoinListener.tpSpawn(p);
         p.setFoodLevel(20);
         p.setTotalExperience(0);
