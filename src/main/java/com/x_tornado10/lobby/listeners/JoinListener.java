@@ -5,6 +5,7 @@ import com.x_tornado10.lobby.db.Database;
 import com.x_tornado10.lobby.loops.ActionBarDisplay;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.Item;
+import com.x_tornado10.lobby.utils.custom.data.PlayerData;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Perms;
 
@@ -30,11 +31,13 @@ public class JoinListener implements Listener {
     public static HashMap<UUID, ActionBarDisplay> displays;
     private final TextComponent join_msg;
     private final Lobby plugin;
+    public final HashMap<UUID, PlayerData> playerData;
     public JoinListener(Location spawn, String join_msg) {
         JoinListener.spawn = spawn;
         this.join_msg = new TextComponent(join_msg);
         plugin = Lobby.getInstance();
         displays = new HashMap<>();
+        playerData = new HashMap<>();
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -91,6 +94,22 @@ public class JoinListener implements Listener {
         for (Player pl : Bukkit.getOnlinePlayers()) {
             pl.spigot().sendMessage(MineDown.parse(Convertor.formatMessage(plugin.getPrefix(p.getUniqueId())) + p.getName() + Convertor.formatMessage(plugin.getSuffix(p.getUniqueId())) + " &#ffffff-#1a77c4&joined the lobby"));
         }
+
+        UUID pid = p.getUniqueId();
+        String prefix = plugin.getPrefix_Null(pid);
+        String suffix = plugin.getSuffix_Null(pid);
+        String name = p.getName();
+        if (prefix != null && suffix != null) {
+            if (!playerData.containsKey(pid)) {
+                playerData.put(pid, new PlayerData(pid, prefix, name, suffix));
+            } else {
+                PlayerData playerData1 = playerData.get(pid);
+                playerData1.setPrefix(prefix);
+                playerData1.setPlayer_name(name);
+                playerData1.setSuffix(suffix);
+            }
+        }
+
         displays.put(p.getUniqueId(), new ActionBarDisplay(p,join_msg));
     }
 

@@ -2,6 +2,7 @@ package com.x_tornado10.lobby.placeholderapi;
 
 import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.db.Database;
+import com.x_tornado10.lobby.listeners.JoinListener;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -10,13 +11,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 public class PlaceHolderHook extends PlaceholderExpansion {
     private final Database db;
     private final Lobby plugin;
+    private final JoinListener joinListener;
     public PlaceHolderHook() {
         plugin = Lobby.getInstance();
         db = plugin.getDatabase();
+        joinListener = plugin.getJoinListener();
     }
     @Override
     public @NotNull String getIdentifier() {
@@ -46,7 +50,7 @@ public class PlaceHolderHook extends PlaceholderExpansion {
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
+        UUID pid = player.getUniqueId();
         return switch (params) {
             case "deaths" -> String.valueOf(stats.getDeaths());
             case "player_kills" -> String.valueOf(stats.getPlayer_kills());
@@ -59,8 +63,16 @@ public class PlaceHolderHook extends PlaceholderExpansion {
             case "chat_messages_send" -> String.valueOf(stats.getChat_messages_send());
             case "playtime" -> String.valueOf(stats.getPlaytime());
             case "playtime_formatted" -> formatSeconds(stats.getPlaytime() / 1000);
-            case "prefix" -> plugin.getPrefix(player.getUniqueId());
-            case "suffix" -> plugin.getSuffix(player.getUniqueId());
+            case "prefix" -> plugin.getPrefix_Null(player.getUniqueId()) == null ?
+                    (joinListener.playerData.containsKey(pid) ?
+                            joinListener.playerData.get(pid).getPrefix() :
+                            "") :
+                    plugin.getPrefix(player.getUniqueId());
+            case "suffix" -> plugin.getSuffix_Null(player.getUniqueId()) == null ?
+                    (joinListener.playerData.containsKey(pid) ?
+                            joinListener.playerData.get(pid).getSuffix() :
+                            "") :
+                    plugin.getSuffix(player.getUniqueId());
             default -> super.onRequest(player, params);
         };
     }

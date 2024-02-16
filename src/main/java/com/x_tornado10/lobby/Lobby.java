@@ -40,6 +40,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
@@ -64,6 +65,7 @@ public final class Lobby extends SimplePlugin {
     @Getter
     private ConfigMgr configMgr;
 
+    @Getter
     private JoinListener joinListener;
     @Getter
     private Database database;
@@ -153,8 +155,18 @@ public final class Lobby extends SimplePlugin {
         if (lobby != null) {
             lobby.setExecutor(new LobbyCommand());
         }
+        String s = "ajl updatealloffline ";
         PlaceHolderHook.registerHook();
-        new UpdateLeaderboard(100, 100,  new String[]{"ajl updatealloffline lobby_playtime","ajl updatealloffline lobby_logins","ajl updatealloffline lobby_login_streak"});
+        new UpdateLeaderboard(200, 200,  new String[]{
+                s + "lobby_playtime",
+                s + "lobby_logins",
+                s + "lobby_login_streak",
+                s + "lobby_blocks_broken",
+                s + "lobby_blocks_placed",
+                s + "lobby_deaths",
+                s + "lobby_mob_kills",
+                s + "lobby_player_kills",
+        });
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         LogFilter.blockedStrings = getStrings();
@@ -272,6 +284,7 @@ public final class Lobby extends SimplePlugin {
         userManager.saveUser(user);
         lpAPI.runUpdateTask();
     }
+    @NonNull
     public String getPrefix(UUID playerUUID) {
         UserManager userManager = lpAPI.getUserManager();
         User user = userManager.getUser(playerUUID);
@@ -284,6 +297,18 @@ public final class Lobby extends SimplePlugin {
         if (prefix != null && !prefix.isEmpty()) return prefix;
         else return "";
     }
+    @Nullable
+    public String getPrefix_Null(UUID playerUUID) {
+        UserManager userManager = lpAPI.getUserManager();
+        User user = userManager.getUser(playerUUID);
+        if (user == null) return null;
+        userManager.loadUser(user.getUniqueId());
+        user = userManager.getUser(playerUUID);
+        if (user == null) return null;
+        CachedMetaData metaData = user.getCachedData().getMetaData();
+        return metaData.getPrefix();
+    }
+    @NonNull
     public String getSuffix(UUID playerUUID) {
         User user = lpAPI.getUserManager().getUser(playerUUID);
         if (user == null) return "";
@@ -291,6 +316,13 @@ public final class Lobby extends SimplePlugin {
         String suffix = metaData.getSuffix();
         if (suffix != null && !suffix.isEmpty()) return suffix;
         else return "";
+    }
+    @Nullable
+    public String getSuffix_Null(UUID playerUUID) {
+        User user = lpAPI.getUserManager().getUser(playerUUID);
+        if (user == null) return null;
+        CachedMetaData metaData = user.getCachedData().getMetaData();
+        return metaData.getSuffix();
     }
     public void updatePrefix(Player p) {
         UserManager mgr = lpAPI.getUserManager();
