@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Setter
 @Getter
-public class PlayerStats {
+public class PlayerStats implements Cloneable {
     private String uuid;
     private long deaths;
     private long player_kills;
@@ -34,4 +35,26 @@ public class PlayerStats {
         this.playtime = playtime;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerStats that = (PlayerStats) o;
+        return getPlaytime() == that.getPlaytime();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPlaytime());
+    }
+
+    @Override
+    public PlayerStats clone() {
+        try {
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return (PlayerStats) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

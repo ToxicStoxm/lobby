@@ -1,22 +1,92 @@
 package com.x_tornado10.lobby.db;
 
+import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mineacademy.fo.database.SimpleDatabase;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Database extends SimpleDatabase {
+    private static HashMap<String, PlayerStats> cache;
+    private static HashMap<String, PlayerStats> last_cache;
 
     public Database(List<String> credentials) {
         String[] parts = credentials.get(0).split(":");
         String host = parts[2].strip().replace("/","");
         String[] parts1 = parts[3].strip().split("/");
         setConnectUsingHikari(true);
-
+        cache = new HashMap<>();
+        last_cache = new HashMap<>();
         connect(host, Integer.parseInt(parts1[0]),parts1[1],credentials.get(1),credentials.get(2),"player_stats",true);
+        updateLoop();
+    }
+    public void save() {
+        //Lobby.getInstance().getLogger().severe("Executing Update Task...");
+
+        List<String> toRemove = new ArrayList<>();
+        HashMap<String, PlayerStats> temp_cache = new HashMap<>();
+
+        for (Map.Entry<String, PlayerStats> entry : cache.entrySet()) {
+            PlayerStats playerStats = entry.getValue();
+            String uuid = entry.getKey();
+
+            //Lobby.getInstance().getLogger().severe(uuid + "  -----  " + playerStats);
+            //Lobby.getInstance().getLogger().severe("LastCache == " + last_cache);
+            if (playerStats.equals(last_cache.get(uuid))) {
+                toRemove.add(uuid);
+                //Lobby.getInstance().getLogger().severe("        ------> removing. Cause: nothing changed!");
+            } else {
+                //Lobby.getInstance().getLogger().severe("        ------> updating.");
+                PreparedStatement statement;
+                try {
+                    statement = prepareStatement("UPDATE player_stats SET deaths = ?, player_kills = ?, mob_kills = ?, blocks_broken = ?, blocks_placed = ?, last_login = ?, login_streak = ?, logins = ?, chat_messages_send = ?, playtime = ? WHERE uuid = ?");
+
+                    statement.setLong(1, playerStats.getDeaths());
+                    statement.setLong(2, playerStats.getPlayer_kills());
+                    statement.setLong(3, playerStats.getMob_kills());
+                    statement.setLong(4, playerStats.getBlocks_broken());
+                    statement.setLong(5, playerStats.getBlocks_placed());
+                    statement.setDate(6, new Date(playerStats.getLast_login().getTime()));
+                    statement.setLong(7, playerStats.getLogin_streak());
+                    statement.setLong(8, playerStats.getLogins());
+                    statement.setLong(9, playerStats.getChat_messages_send());
+                    statement.setLong(10, playerStats.getPlaytime());
+                    statement.setString(11, playerStats.getUuid());
+
+                    statement.executeUpdate();
+                    statement.close();
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                temp_cache.put(entry.getKey(), entry.getValue().clone());
+            }
+        }
+        //Lobby.getInstance().getLogger().severe("UpdateTask: clearing and resetting cache...");
+        for (String s : toRemove) {
+            cache.remove(s);
+            //Lobby.getInstance().getLogger().severe("        ------> clearing: " + s);
+        }
+        last_cache.clear();
+        last_cache.putAll(temp_cache);
+        //Lobby.getInstance().getLogger().severe("LastCache == " + last_cache);
+        temp_cache.clear();
+        toRemove.clear();
+    }
+
+    private void updateLoop() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                save();
+            }
+        }.runTaskTimerAsynchronously(Lobby.getInstance(), 10 * 20, 60 * 20);
     }
 
     public boolean initialize() throws SQLException {
@@ -39,6 +109,9 @@ public class Database extends SimpleDatabase {
     }
 
     public PlayerStats findPlayerStatsByUUID(String uuid) throws SQLException {
+        if (cache.containsKey(uuid)) {
+            return cache.get(uuid);
+        }
         PreparedStatement statement = prepareStatement("SELECT * FROM player_stats WHERE uuid = ?");
         statement.setString(1, uuid);
 
@@ -61,7 +134,9 @@ public class Database extends SimpleDatabase {
                     resultSet.getLong("playtime"));
 
             statement.close();
-
+            if (!cache.containsKey(uuid)) {
+                cache.put(uuid, playerStats);
+            }
             return playerStats;
         }
 
@@ -88,26 +163,32 @@ public class Database extends SimpleDatabase {
         statement.executeUpdate();
 
         statement.close();
-
+        String uuid = playerStats.getUuid();
+        if (!cache.containsKey(uuid)) {
+            cache.put(uuid, playerStats);
+        }
     }
 
     public void updatePlayerStats(PlayerStats playerStats) throws SQLException {
-        PreparedStatement statement = prepareStatement("UPDATE player_stats SET deaths = ?, player_kills = ?, mob_kills = ?, blocks_broken = ?, blocks_placed = ?, last_login = ?, login_streak = ?, logins = ?, chat_messages_send = ?, playtime = ? WHERE uuid = ?");
-        statement.setLong(1, playerStats.getDeaths());
-        statement.setLong(2, playerStats.getPlayer_kills());
-        statement.setLong(3, playerStats.getMob_kills());
-        statement.setLong(4, playerStats.getBlocks_broken());
-        statement.setLong(5, playerStats.getBlocks_placed());
-        statement.setDate(6, new Date(playerStats.getLast_login().getTime()));
-        statement.setLong(7, playerStats.getLogin_streak());
-        statement.setLong(8, playerStats.getLogins());
-        statement.setLong(9, playerStats.getChat_messages_send());
-        statement.setLong(10, playerStats.getPlaytime());
-        statement.setString(11, playerStats.getUuid());
+        String uuid = playerStats.getUuid();
+        if (!cache.containsKey(uuid)) {
+            PreparedStatement statement = prepareStatement("UPDATE player_stats SET deaths = ?, player_kills = ?, mob_kills = ?, blocks_broken = ?, blocks_placed = ?, last_login = ?, login_streak = ?, logins = ?, chat_messages_send = ?, playtime = ? WHERE uuid = ?");
+            statement.setLong(1, playerStats.getDeaths());
+            statement.setLong(2, playerStats.getPlayer_kills());
+            statement.setLong(3, playerStats.getMob_kills());
+            statement.setLong(4, playerStats.getBlocks_broken());
+            statement.setLong(5, playerStats.getBlocks_placed());
+            statement.setDate(6, new Date(playerStats.getLast_login().getTime()));
+            statement.setLong(7, playerStats.getLogin_streak());
+            statement.setLong(8, playerStats.getLogins());
+            statement.setLong(9, playerStats.getChat_messages_send());
+            statement.setLong(10, playerStats.getPlaytime());
+            statement.setString(11, playerStats.getUuid());
 
-        statement.executeUpdate();
-        statement.close();
-
+            statement.executeUpdate();
+            statement.close();
+        }
+        cache.put(uuid, playerStats);
     }
     public List<Milestone> getMilestones() throws SQLException {
         List<Milestone> milestoneList = new ArrayList<>();

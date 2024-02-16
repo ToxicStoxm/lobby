@@ -128,6 +128,7 @@ public final class Lobby extends SimplePlugin {
     @Override
     public void onPluginStop() {
         // Plugin shutdown logic
+        database.save();
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
     }
 
