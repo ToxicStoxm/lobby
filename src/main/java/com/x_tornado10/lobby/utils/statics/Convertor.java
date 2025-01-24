@@ -1,13 +1,13 @@
 package com.x_tornado10.lobby.utils.statics;
 
+import lombok.NonNull;
+import net.md_5.bungee.api.ChatColor;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import lombok.NonNull;
-import net.md_5.bungee.api.ChatColor;
 
 public class Convertor {
     public static String darkenHexColor(String hexColor, double factor) {

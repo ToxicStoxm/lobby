@@ -17,7 +17,6 @@ import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import com.x_tornado10.lobby.utils.statics.Paths;
 import de.themoep.minedown.MineDown;
-import lombok.Getter;
 import lombok.NonNull;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.luckperms.api.LuckPerms;
@@ -32,7 +31,6 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.query.QueryOptions;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -52,7 +50,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 
@@ -62,22 +59,42 @@ public final class Lobby extends SimplePlugin {
         return (Lobby) SimplePlugin.getInstance();
     }
 
-    @Getter
     private ConfigMgr configMgr;
-
-    @Getter
     private JoinListener joinListener;
-    @Getter
     private Database database;
     private Logger logger;
-    @Getter
     private LuckPerms lpAPI;
-    @Getter
     private ItemGetter itemGetter;
-    @Getter
     private MilestoneMgr milestonesMgr;
-    @Getter
     private LogFilter logFilter;
+
+    public JoinListener getJoinListener() {
+        return joinListener;
+    }
+
+    public ConfigMgr getConfigMgr() {
+        return configMgr;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public LuckPerms getLpAPI() {
+        return lpAPI;
+    }
+
+    public ItemGetter getItemGetter() {
+        return itemGetter;
+    }
+
+    public MilestoneMgr getMilestonesMgr() {
+        return milestonesMgr;
+    }
+
+    public LogFilter getLogFilter() {
+        return logFilter;
+    }
 
     @Override
     protected void onPluginLoad() {
@@ -222,7 +239,7 @@ public final class Lobby extends SimplePlugin {
         if (usr == null) return false;
         return usr.getCachedData().getPermissionData().checkPermission(permission).asBoolean();
     }
-    public boolean checkGroup (Player p, String groupName) {
+    public boolean checkGroup(Player p, String groupName) {
         if (lpAPI == null) lpAPI = LuckPermsProvider.get();
         User usr = lpAPI.getUserManager().getUser(p.getUniqueId());
         GroupManager gm = lpAPI.getGroupManager();
@@ -231,7 +248,7 @@ public final class Lobby extends SimplePlugin {
         Group group = gm.getGroup(groupName);
         return usr.getInheritedGroups(QueryOptions.defaultContextualOptions()).contains(group);
     }
-    public boolean checkGroups (Player p, String[] groupNames) {
+    public boolean checkGroups(Player p, String[] groupNames) {
         if (lpAPI == null) lpAPI = LuckPermsProvider.get();
         User usr = lpAPI.getUserManager().getUser(p.getUniqueId());
         GroupManager gm = lpAPI.getGroupManager();

@@ -19,10 +19,13 @@ public class LobbyCompass extends Menu {
 
     @Position(22)
     private final Button joinLobbyButton;
+    /*@Position(24)
+    private final Button joinEternalSMPButton;*/
     @Position(24)
-    private final Button joinEternalSMPButton;
-    @Position(20)
     private final Button joinRevolutionSMPButton;
+
+    @Position(20)
+    private final Button joinSMP2025;
 
     public LobbyCompass() {
         plugin = Lobby.getInstance();
@@ -51,7 +54,29 @@ public class LobbyCompass extends Menu {
             }
         };
 
-        joinEternalSMPButton = new Button() {
+        joinSMP2025 = new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
+                plugin.sendPlayerToServer(player, Server.SMP2025);
+                Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
+                menu.handleClose(currentChestInventory);
+                player.closeInventory();
+            }
+
+            @Override
+            public ItemStack getItem() {
+                return ItemCreator.of(CompMaterial.GRASS_BLOCK)
+                        .name(ChatColor.GREEN + "SMP2025 " + ChatColor.RED + "[1.21.4]" + ChatColor.AQUA + " [NEW]")
+                        .lore(
+                                ChatColor.DARK_GRAY + "Survival",
+                                "",
+                                ChatColor.GRAY + "Join the SMP2025 server."
+                        )
+                        .make();
+            }
+        };
+
+        /*joinEternalSMPButton = new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
                 plugin.sendPlayerToServer(player, Server.EternalSMP);
@@ -71,7 +96,7 @@ public class LobbyCompass extends Menu {
                         )
                         .make();
             }
-        };
+        };*/
 
         joinRevolutionSMPButton = new Button() {
             @Override
@@ -85,7 +110,7 @@ public class LobbyCompass extends Menu {
             @Override
             public ItemStack getItem() {
                 return ItemCreator.of(CompMaterial.GRASS_BLOCK)
-                        .name(ChatColor.GREEN + "RevolutionSMP " + ChatColor.RED + "[1.20.2]" + ChatColor.AQUA + " [NEW]")
+                        .name(ChatColor.GREEN + "RevolutionSMP " + ChatColor.RED + "[1.20.x]")
                         .lore(
                                 ChatColor.DARK_GRAY + "Survival",
                                 "",

@@ -4,7 +4,10 @@ import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import org.mineacademy.fo.database.SimpleDatabase;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Database extends SimpleDatabase {
