@@ -26,6 +26,7 @@ import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.plugin.SimplePlugin;
@@ -45,20 +46,33 @@ public final class Lobby extends SimplePlugin {
         return (Lobby) SimplePlugin.getInstance();
     }
 
-    @Getter
     private ConfigMgr configMgr;
-
-    //private JoinListener joinListener;
-    @Getter
     private Database database;
     private Logger logger;
-    @Getter
     private LuckPerms lpAPI;
-    //@Getter
-    //private ItemGetter itemGetter;
-    @Getter
     private MilestoneMgr milestonesMgr;
     private PlayerStatsListener playerStatsListener;
+
+    public ConfigMgr getConfigMgr() {
+        return configMgr;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    @Override
+    public @NotNull Logger getLogger() {
+        return logger;
+    }
+
+    public LuckPerms getLpAPI() {
+        return lpAPI;
+    }
+
+    public MilestoneMgr getMilestonesMgr() {
+        return milestonesMgr;
+    }
 
     @Override
     protected void onPluginLoad() {

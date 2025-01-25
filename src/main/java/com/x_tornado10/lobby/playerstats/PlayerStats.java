@@ -6,8 +6,6 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.Objects;
 
-@Setter
-@Getter
 public class PlayerStats implements Cloneable {
     private String uuid;
     private long deaths;
@@ -20,6 +18,94 @@ public class PlayerStats implements Cloneable {
     private long logins;
     private long chat_messages_send;
     private long playtime;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public long getDeaths() {
+        return deaths;
+    }
+
+    public void setDeaths(long deaths) {
+        this.deaths = deaths;
+    }
+
+    public long getPlayer_kills() {
+        return player_kills;
+    }
+
+    public void setPlayer_kills(long player_kills) {
+        this.player_kills = player_kills;
+    }
+
+    public long getMob_kills() {
+        return mob_kills;
+    }
+
+    public void setMob_kills(long mob_kills) {
+        this.mob_kills = mob_kills;
+    }
+
+    public long getBlocks_broken() {
+        return blocks_broken;
+    }
+
+    public void setBlocks_broken(long blocks_broken) {
+        this.blocks_broken = blocks_broken;
+    }
+
+    public long getBlocks_placed() {
+        return blocks_placed;
+    }
+
+    public void setBlocks_placed(long blocks_placed) {
+        this.blocks_placed = blocks_placed;
+    }
+
+    public Date getLast_login() {
+        return last_login;
+    }
+
+    public void setLast_login(Date last_login) {
+        this.last_login = last_login;
+    }
+
+    public long getLogin_streak() {
+        return login_streak;
+    }
+
+    public void setLogin_streak(long login_streak) {
+        this.login_streak = login_streak;
+    }
+
+    public long getLogins() {
+        return logins;
+    }
+
+    public void setLogins(long logins) {
+        this.logins = logins;
+    }
+
+    public long getChat_messages_send() {
+        return chat_messages_send;
+    }
+
+    public void setChat_messages_send(long chat_messages_send) {
+        this.chat_messages_send = chat_messages_send;
+    }
+
+    public long getPlaytime() {
+        return playtime;
+    }
+
+    public void setPlaytime(long playtime) {
+        this.playtime = playtime;
+    }
 
     public PlayerStats(String uuid, long deaths, long player_kills, long mob_kills, long blocks_broken, long blocks_placed, Date last_login, long login_streak, long logins, long chat_messages_send, long playtime) {
         this.uuid = uuid;
