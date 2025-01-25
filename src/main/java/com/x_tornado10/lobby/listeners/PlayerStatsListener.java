@@ -20,7 +20,6 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.PrefixNode;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -29,8 +28,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,13 +38,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 public class PlayerStatsListener implements Listener {
 
     private final Database database;
-    private final Logger logger;
+    //private final Logger logger;
     private final HashMap<UUID, Date> last_update;
     private final Lobby plugin;
     private final MilestoneMgr milestoneMgr;
@@ -52,7 +50,7 @@ public class PlayerStatsListener implements Listener {
     public PlayerStatsListener() {
         plugin = Lobby.getInstance();
         database = plugin.getDatabase();
-        logger = plugin.getLogger();
+        //logger = plugin.getLogger();
         last_update = new HashMap<>();
         milestoneMgr = plugin.getMilestonesMgr();
         lpAPI = plugin.getLpAPI();
@@ -108,7 +106,7 @@ public class PlayerStatsListener implements Listener {
             playerStats.setLogins(playerStats.getLogins()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            logger.severe("Could not update player stats." + ex.getErrorCode());
+            //logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
@@ -127,7 +125,7 @@ public class PlayerStatsListener implements Listener {
                             last_update.put(entry.getKey(), new Date());
                             database.updatePlayerStats(playerStats);
                         } catch (SQLException e) {
-                            logger.severe("Could not update player stats." + e.getErrorCode());
+                            //logger.severe("Could not update player stats." + e.getErrorCode());
                             e.printStackTrace();
                         }
                     } else last_update.remove(entry.getKey());
@@ -146,7 +144,7 @@ public class PlayerStatsListener implements Listener {
             last_update.remove(p.getUniqueId());
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            logger.severe("Could not update player stats." + ex.getErrorCode());
+            //logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
@@ -168,7 +166,7 @@ public class PlayerStatsListener implements Listener {
             playerStats.setChat_messages_send(playerStats.getChat_messages_send()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            logger.severe("Could not update player stats." + ex.getErrorCode());
+            //logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
         }
         TextComponent textComponent = (TextComponent) e.message();
@@ -220,7 +218,7 @@ public class PlayerStatsListener implements Listener {
             }
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
+           // logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
@@ -231,7 +229,7 @@ public class PlayerStatsListener implements Listener {
             playerStats.setBlocks_broken(playerStats.getBlocks_broken()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
+            //logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
@@ -242,7 +240,7 @@ public class PlayerStatsListener implements Listener {
             playerStats.setBlocks_placed(playerStats.getBlocks_placed()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
+            //logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
             ex.printStackTrace();
         }
     }

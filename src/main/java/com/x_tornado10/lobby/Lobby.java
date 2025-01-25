@@ -13,7 +13,6 @@ import com.x_tornado10.lobby.managers.ConfigMgr;
 import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.utils.Item;
 import com.x_tornado10.lobby.utils.statics.Paths;
-import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -26,7 +25,6 @@ import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.plugin.SimplePlugin;
@@ -37,7 +35,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 
 public final class Lobby extends SimplePlugin {
@@ -48,7 +45,7 @@ public final class Lobby extends SimplePlugin {
 
     private ConfigMgr configMgr;
     private Database database;
-    private Logger logger;
+    //private Logger logger;
     private LuckPerms lpAPI;
     private MilestoneMgr milestonesMgr;
     private PlayerStatsListener playerStatsListener;
@@ -61,10 +58,10 @@ public final class Lobby extends SimplePlugin {
         return database;
     }
 
-    @Override
+   /* @Override
     public @NotNull Logger getLogger() {
         return logger;
-    }
+    }*/
 
     public LuckPerms getLpAPI() {
         return lpAPI;
@@ -83,15 +80,14 @@ public final class Lobby extends SimplePlugin {
     @Override
     public void onPluginStart() {
         // Plugin startup logic
-        logger = getLogger();
         saveDefaultConfig();
         File configFile = new File(getDataFolder(), "config.yml");
         try {
             ConfigUpdater.update(this, "config.yml", configFile, new ArrayList<>());
 
         } catch (IOException e) {
-            logger.severe("Error while trying to update config.yml!");
-            logger.severe("If this error persists after restarting the server please file a bug report!");
+            /*logger.severe("Error while trying to update config.yml!");
+            logger.severe("If this error persists after restarting the server please file a bug report!");*/
         }
         reloadConfig();
         Paths.initialize();
@@ -117,8 +113,8 @@ public final class Lobby extends SimplePlugin {
         try {
             milestonesMgr = new MilestoneMgr();
         } catch (SQLException e) {
-            logger.severe(e.getMessage());
-            logger.severe("Wasn't able to get milestones from database please check your syntax!");
+            /*logger.severe(e.getMessage());
+            logger.severe("Wasn't able to get milestones from database please check your syntax!");*/
         }
 
         PluginCommand grantRank = Bukkit.getPluginCommand("setrank");

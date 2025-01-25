@@ -12,10 +12,10 @@ import java.util.logging.Logger;
 
 public class GrantRankCommand implements CommandExecutor {
     private final Lobby plugin;
-    private final Logger logger;
+    //private final Logger logger;
     public GrantRankCommand() {
         plugin = Lobby.getInstance();
-        logger = plugin.getLogger();
+        //logger = plugin.getLogger();
     }
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
@@ -41,13 +41,13 @@ public class GrantRankCommand implements CommandExecutor {
             if (args.length == 2) {
                 Player pl = Bukkit.getPlayer(args[0]);
                 if (pl == null) {
-                    logger.info("Invalid Player!");
+                    //logger.info("Invalid Player!");
                     return true;
                 }
-                logger.info(pl.getName() + " now inherits group " + args[1]);
+                //logger.info(pl.getName() + " now inherits group " + args[1]);
                 plugin.setPlayerGroup(pl, args[1]);
             } else {
-                logger.info("Wrong syntax!");
+                //logger.info("Wrong syntax!");
                 return true;
             }
         }

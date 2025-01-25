@@ -61,7 +61,7 @@ public class SuffixChangeCommand implements CommandExecutor {
             }
         } else {
             switch (args.length) {
-                case 0,1 -> plugin.getLogger().info("Please provide all necessary arguments!");
+                case 0,1 -> {}//plugin.getLogger().info("Please provide all necessary arguments!");
                 case 2 -> {
                     if (lpAPI == null) lpAPI = plugin.getLpAPI();
                     if (lpAPI == null) return false;
@@ -78,7 +78,7 @@ public class SuffixChangeCommand implements CommandExecutor {
                     }
                     String suffix = ChatColor.RESET + args[1].replace("%_%", " ") + ChatColor.RESET;
                     if (rawSuffix(suffix).length() > 20) {
-                        plugin.getLogger().info(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
+                        //plugin.getLogger().info(ChatColor.RED + "Your suffix can't be longer than 15 characters!");
                         return true;
                     }
                     for (SuffixNode snode : usr.getNodes(NodeType.SUFFIX)) {
@@ -88,7 +88,9 @@ public class SuffixChangeCommand implements CommandExecutor {
                     usrMgr.saveUser(usr);
                     lpAPI.runUpdateTask();
                 }
-                default -> plugin.getLogger().info(ChatColor.RED + "You provided too many arguments!");
+                default -> {
+                    //plugin.getLogger().info(ChatColor.RED + "You provided too many arguments!");
+                }
             }
         }
         return true;
