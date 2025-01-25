@@ -25,7 +25,6 @@ import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Unmodifiable;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
@@ -170,7 +169,7 @@ public final class Lobby extends SimplePlugin {
         User usr = lpAPI.getUserManager().getUser(p.getUniqueId());
         GroupManager gm = lpAPI.getGroupManager();
         if (usr == null) return true;
-        @org.checkerframework.checker.nullness.qual.NonNull @Unmodifiable Collection<Group> g = usr.getInheritedGroups(QueryOptions.defaultContextualOptions());
+        @org.checkerframework.checker.nullness.qual.NonNull Collection<Group> g = usr.getInheritedGroups(QueryOptions.defaultContextualOptions());
         for (String groupName : groupNames) {
             if (!gm.isLoaded(groupName)) gm.loadGroup(groupName);
             Group group = gm.getGroup(groupName);

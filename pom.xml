@@ -53,12 +53,13 @@
                             <include>de.themoep:minedown*</include>
                             <include>net.kyori.adventure:*</include>
                             <include>net.kyori:adventure*</include>
+                            <include>com.zaxxer:*</include>
                         </includes>
                     </artifactSet>
                     <relocations>
                         <relocation>
-                            <pattern>com.zaxxer</pattern>
-                            <shadedPattern>project.groupId}.${project.artifactId}.utils</shadedPattern>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.hikari</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.mineacademy.fo</pattern>
@@ -121,6 +122,11 @@
             <artifactId>spigot-api</artifactId>
             <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

@@ -7,7 +7,6 @@ import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import com.x_tornado10.lobby.utils.statics.Convertor;
 import de.themoep.minedown.adventure.MineDown;
-import io.papermc.paper.event.player.AsyncChatEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.TextComponent;
 import net.luckperms.api.LuckPerms;
@@ -158,7 +157,7 @@ public class PlayerStatsListener implements Listener {
 
         return String.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds);
     }
-    @EventHandler
+    /*@EventHandler
     public void onChat(AsyncChatEvent e) {
         Player p = e.getPlayer();
         try {
@@ -186,6 +185,8 @@ public class PlayerStatsListener implements Listener {
             }
         }
     }
+    */
+
     @EventHandler
     public void onDeath(EntityDeathEvent event) {
         Entity deadEntity = event.getEntity();
