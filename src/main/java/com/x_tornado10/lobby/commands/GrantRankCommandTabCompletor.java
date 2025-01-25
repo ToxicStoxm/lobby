@@ -14,7 +14,7 @@ import java.util.List;
 public class GrantRankCommandTabCompletor implements TabCompleter {
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         List<String> result = new ArrayList<>();
         switch (args.length) {
             case 1 -> {

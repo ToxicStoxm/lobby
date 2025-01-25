@@ -25,6 +25,7 @@ import net.luckperms.api.query.QueryOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
@@ -34,7 +35,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.logging.Logger;
 
 public final class Lobby extends SimplePlugin {
 
@@ -44,7 +45,7 @@ public final class Lobby extends SimplePlugin {
 
     private ConfigMgr configMgr;
     private Database database;
-    //private Logger logger;
+    private Logger logger;
     private LuckPerms lpAPI;
     private MilestoneMgr milestonesMgr;
     private PlayerStatsListener playerStatsListener;
@@ -57,11 +58,6 @@ public final class Lobby extends SimplePlugin {
         return database;
     }
 
-   /* @Override
-    public @NotNull Logger getLogger() {
-        return logger;
-    }*/
-
     public LuckPerms getLpAPI() {
         return lpAPI;
     }
@@ -72,6 +68,7 @@ public final class Lobby extends SimplePlugin {
 
     @Override
     protected void onPluginLoad() {
+        logger = getLogger();
         ButtonReturnBack.setMaterial(CompMaterial.RED_STAINED_GLASS_PANE);
         super.onPluginLoad();
     }
@@ -85,8 +82,8 @@ public final class Lobby extends SimplePlugin {
             ConfigUpdater.update(this, "config.yml", configFile, new ArrayList<>());
 
         } catch (IOException e) {
-            /*logger.severe("Error while trying to update config.yml!");
-            logger.severe("If this error persists after restarting the server please file a bug report!");*/
+            logger.severe("Error while trying to update config.yml!");
+            logger.severe("If this error persists after restarting the server please file a bug report!");
         }
         reloadConfig();
         Paths.initialize();
@@ -94,26 +91,11 @@ public final class Lobby extends SimplePlugin {
         configMgr = new ConfigMgr();
         database = new Database(configMgr.getDbCredentials());
 
-
-        /*
-        try {
-            if (!database.initialize()) {
-                logger.severe("Couldn't initialize database! Disabling plugin!");
-                Bukkit.getPluginManager().disablePlugin(this);
-            } else logger.info("Successfully initialized database.");
-        } catch (SQLException e) {
-            logger.severe("Couldn't initialize database! Disabling plugin!");
-            logger.severe(e.getMessage());
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-
-         */
         try {
             milestonesMgr = new MilestoneMgr();
         } catch (SQLException e) {
-            /*logger.severe(e.getMessage());
-            logger.severe("Wasn't able to get milestones from database please check your syntax!");*/
+            logger.severe(e.getMessage());
+            logger.severe("Wasn't able to get milestones from database please check your syntax!");
         }
 
         PluginCommand grantRank = Bukkit.getPluginCommand("setrank");
@@ -141,7 +123,7 @@ public final class Lobby extends SimplePlugin {
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
     }
 
-    public void sendPlayerToServer(Player player, String serverName) {
+    public void sendPlayerToServer(@NotNull Player player, String serverName) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
         out.writeUTF(serverName);
@@ -183,7 +165,7 @@ public final class Lobby extends SimplePlugin {
     public boolean hasModeration(Player p) {
         return checkGroups(p, new String[]{"owner","builder"});
     }
-    public void setPlayerGroup(Player p, String groupName) {
+    public void setPlayerGroup(@NotNull Player p, String groupName) {
         UserManager userManager = lpAPI.getUserManager();
         User user = userManager.getUser(p.getUniqueId());
         if (user == null) return;

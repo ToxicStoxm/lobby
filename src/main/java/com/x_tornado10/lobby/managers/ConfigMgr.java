@@ -5,7 +5,8 @@ import com.x_tornado10.lobby.utils.statics.Paths;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigMgr {
     private final FileConfiguration config;

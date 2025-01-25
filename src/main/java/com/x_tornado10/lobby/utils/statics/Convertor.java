@@ -1,11 +1,14 @@
 package com.x_tornado10.lobby.utils.statics;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Convertor {
-    public static String darkenHexColor(String hexColor, double factor) {
+    public static @NotNull String darkenHexColor(@NotNull String hexColor, double factor) {
         if (!hexColor.matches("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$")) {
             throw new IllegalArgumentException("Invalid hex color format");
         }
@@ -34,7 +37,7 @@ public class Convertor {
         Matcher matcher = pattern.matcher(input);
         return matcher.find();
     }
-    public static String extractHexCode(String input) {
+    public static @Nullable String extractHexCode(String input) {
         Pattern pattern = Pattern.compile("#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})");
         Matcher matcher = pattern.matcher(input);
         return matcher.find() ? matcher.group() : null;

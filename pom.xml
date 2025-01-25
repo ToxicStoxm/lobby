@@ -58,10 +58,6 @@
                     </artifactSet>
                     <relocations>
                         <relocation>
-                            <pattern>com.zaxxer.hikari</pattern>
-                            <shadedPattern>${project.groupId}.${project.artifactId}.hikari</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>org.mineacademy.fo</pattern>
                             <shadedPattern>${project.groupId}.${project.artifactId}.lib</shadedPattern>
                         </relocation>

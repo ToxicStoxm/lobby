@@ -1,10 +1,14 @@
 package com.x_tornado10.lobby.utils;
 
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class Item {
     public static List<UUID> ignore = null;
@@ -82,7 +86,7 @@ public class Item {
     public final static int INVBOUNDS = 49;
     public final static int PROFILEMILESTONES = 50;
     public final static int BACKBUTTON0 = 51;
-    public static List<Integer> findMissingNumbers(List<Integer> inputList) {
+    public static @NotNull List<Integer> findMissingNumbers(@NotNull List<Integer> inputList) {
         if (inputList.isEmpty()) {
             return Collections.emptyList();
         }

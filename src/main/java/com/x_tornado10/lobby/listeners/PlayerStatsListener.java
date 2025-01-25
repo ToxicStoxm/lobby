@@ -6,9 +6,6 @@ import com.x_tornado10.lobby.managers.MilestoneMgr;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import com.x_tornado10.lobby.utils.statics.Convertor;
-import de.themoep.minedown.adventure.MineDown;
-import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.TextComponent;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.GroupManager;
@@ -27,21 +24,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class PlayerStatsListener implements Listener {
 
     private final Database database;
-    //private final Logger logger;
+    private final Logger logger;
     private final HashMap<UUID, Date> last_update;
     private final Lobby plugin;
     private final MilestoneMgr milestoneMgr;
@@ -49,13 +50,13 @@ public class PlayerStatsListener implements Listener {
     public PlayerStatsListener() {
         plugin = Lobby.getInstance();
         database = plugin.getDatabase();
-        //logger = plugin.getLogger();
+        logger = plugin.getLogger();
         last_update = new HashMap<>();
         milestoneMgr = plugin.getMilestonesMgr();
         lpAPI = plugin.getLpAPI();
         updateLoop();
     }
-    public PlayerStats getPlayerStatsFromDatabase(Player player) throws SQLException {
+    public PlayerStats getPlayerStatsFromDatabase(@NotNull Player player) throws SQLException {
 
         PlayerStats playerStats = database.findPlayerStatsByUUID(player.getUniqueId().toString());
 
@@ -66,7 +67,7 @@ public class PlayerStatsListener implements Listener {
 
         return playerStats;
     }
-    public PlayerStats getPlayerStatsFromDatabase(UUID uuid) throws SQLException {
+    public PlayerStats getPlayerStatsFromDatabase(@NotNull UUID uuid) throws SQLException {
 
         PlayerStats playerStats = database.findPlayerStatsByUUID(uuid.toString());
 
@@ -78,7 +79,7 @@ public class PlayerStatsListener implements Listener {
         return playerStats;
     }
     @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
+    public void onJoin(@NotNull PlayerJoinEvent e) {
         Player p = e.getPlayer();
         last_update.put(p.getUniqueId(), new Date());
         try {
@@ -105,7 +106,7 @@ public class PlayerStatsListener implements Listener {
             playerStats.setLogins(playerStats.getLogins()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            //logger.severe("Could not update player stats." + ex.getErrorCode());
+            logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
@@ -133,7 +134,7 @@ public class PlayerStatsListener implements Listener {
         }.runTaskTimer(plugin, 20,100);
     }
     @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
+    public void onQuit(@NotNull PlayerQuitEvent e) {
         Player p = e.getPlayer();
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(p);
@@ -143,11 +144,12 @@ public class PlayerStatsListener implements Listener {
             last_update.remove(p.getUniqueId());
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            //logger.severe("Could not update player stats." + ex.getErrorCode());
+            logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
-    public static String convertSeconds(int seconds) {
+    @Contract(pure = true)
+    public static @NotNull String convertSeconds(int seconds) {
         int days = seconds / (24 * 3600);
         seconds %= (24 * 3600);
         int hours = seconds / 3600;
@@ -157,18 +159,18 @@ public class PlayerStatsListener implements Listener {
 
         return String.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds);
     }
-    /*@EventHandler
-    public void onChat(AsyncChatEvent e) {
+    @EventHandler
+    public void onChat(@NotNull AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(p);
             playerStats.setChat_messages_send(playerStats.getChat_messages_send()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            //logger.severe("Could not update player stats." + ex.getErrorCode());
+            logger.severe("Could not update player stats." + ex.getErrorCode());
             ex.printStackTrace();
         }
-        TextComponent textComponent = (TextComponent) e.message();
+        /*TextComponent textComponent = (TextComponent) e.getMessage();
         if (plugin.hasPremium(p)) {
             try {
                 e.message(MineDown.parse(PlaceholderAPI.setPlaceholders(e.getPlayer(), textComponent.content())));
@@ -183,12 +185,12 @@ public class PlayerStatsListener implements Listener {
                 p.sendMessage(org.bukkit.ChatColor.RED + "Failed to parse Minedown Syntax! If you believe this is an error please contact the server admins!");
                 e.setCancelled(true);
             }
-        }
+        }*/
     }
-    */
+
 
     @EventHandler
-    public void onDeath(EntityDeathEvent event) {
+    public void onDeath(@NotNull EntityDeathEvent event) {
         Entity deadEntity = event.getEntity();
         Player killer = event.getEntity().getKiller();
 
@@ -219,33 +221,33 @@ public class PlayerStatsListener implements Listener {
             }
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-           // logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
+           logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent e) {
+    public void onBlockBreak(@NotNull BlockBreakEvent e) {
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(e.getPlayer());
             playerStats.setBlocks_broken(playerStats.getBlocks_broken()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            //logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
+            logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
     @EventHandler
-    public void onPlaceBreak(BlockPlaceEvent e) {
+    public void onPlaceBreak(@NotNull BlockPlaceEvent e) {
         try {
             PlayerStats playerStats = getPlayerStatsFromDatabase(e.getPlayer());
             playerStats.setBlocks_placed(playerStats.getBlocks_placed()+1);
             database.updatePlayerStats(playerStats);
         } catch (SQLException ex) {
-            //logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
+            logger.severe("Could not update player stats. Error Code: " + ex.getErrorCode());
             ex.printStackTrace();
         }
     }
-    private Milestone checkMilestones(double playtime, Player p) {
+    private @Nullable Milestone checkMilestones(double playtime, Player p) {
         Milestone m = milestoneMgr.getMilestone(playtime);
         if (m == null) return null;
         if (lpAPI == null) lpAPI = LuckPermsProvider.get();

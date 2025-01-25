@@ -4,9 +4,13 @@ import com.x_tornado10.lobby.Lobby;
 import com.x_tornado10.lobby.playerstats.PlayerStats;
 import com.x_tornado10.lobby.utils.custom.data.Milestone;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import org.mineacademy.fo.database.SimpleDatabase;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +20,7 @@ public class Database extends SimpleDatabase {
     private static HashMap<String, PlayerStats> cache;
     private static HashMap<String, PlayerStats> last_cache;
 
-    public Database(List<String> credentials) {
+    public Database(@NotNull List<String> credentials) {
         String[] parts = credentials.get(0).split(":");
         String host = parts[2].strip().replace("/","");
         String[] parts1 = parts[3].strip().split("/");
@@ -27,7 +31,7 @@ public class Database extends SimpleDatabase {
         updateLoop();
     }
     public void save() {
-        //Lobby.getInstance().getLogger().severe("Executing Update Task...");
+        Lobby.getInstance().getLogger().info("Executing Update Task...");
 
         List<String> toRemove = new ArrayList<>();
         HashMap<String, PlayerStats> temp_cache = new HashMap<>();
@@ -36,13 +40,13 @@ public class Database extends SimpleDatabase {
             PlayerStats playerStats = entry.getValue();
             String uuid = entry.getKey();
 
-            //Lobby.getInstance().getLogger().severe(uuid + "  -----  " + playerStats);
-            //Lobby.getInstance().getLogger().severe("LastCache == " + last_cache);
+            Lobby.getInstance().getLogger().info(uuid + "  -----  " + playerStats);
+            Lobby.getInstance().getLogger().info("LastCache == " + last_cache);
             if (playerStats.equals(last_cache.get(uuid))) {
                 toRemove.add(uuid);
-                //Lobby.getInstance().getLogger().severe("        ------> removing. Cause: nothing changed!");
+                Lobby.getInstance().getLogger().info("        ------> removing. Cause: nothing changed!");
             } else {
-                //Lobby.getInstance().getLogger().severe("        ------> updating.");
+                Lobby.getInstance().getLogger().info("        ------> updating.");
                 PreparedStatement statement;
                 try {
                     statement = prepareStatement("UPDATE player_stats SET deaths = ?, player_kills = ?, mob_kills = ?, blocks_broken = ?, blocks_placed = ?, last_login = ?, login_streak = ?, logins = ?, chat_messages_send = ?, playtime = ? WHERE uuid = ?");
@@ -68,14 +72,14 @@ public class Database extends SimpleDatabase {
                 temp_cache.put(entry.getKey(), entry.getValue().clone());
             }
         }
-        //Lobby.getInstance().getLogger().severe("UpdateTask: clearing and resetting cache...");
+        Lobby.getInstance().getLogger().info("UpdateTask: clearing and resetting cache...");
         for (String s : toRemove) {
             cache.remove(s);
-            //Lobby.getInstance().getLogger().severe("        ------> clearing: " + s);
+            Lobby.getInstance().getLogger().info("        ------> clearing: " + s);
         }
         last_cache.clear();
         last_cache.putAll(temp_cache);
-        //Lobby.getInstance().getLogger().severe("LastCache == " + last_cache);
+        Lobby.getInstance().getLogger().info("LastCache == " + last_cache);
         temp_cache.clear();
         toRemove.clear();
     }
@@ -145,7 +149,7 @@ public class Database extends SimpleDatabase {
         return null;
     }
 
-    public void createPlayerStats(PlayerStats playerStats) throws SQLException {
+    public void createPlayerStats(@NotNull PlayerStats playerStats) throws SQLException {
 
         PreparedStatement statement = prepareStatement("INSERT INTO player_stats(uuid, deaths, player_kills, mob_kills, blocks_broken, blocks_placed, last_login, login_streak, logins, chat_messages_send, playtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         statement.setString(1, playerStats.getUuid());
@@ -169,7 +173,7 @@ public class Database extends SimpleDatabase {
         }
     }
 
-    public void updatePlayerStats(PlayerStats playerStats) throws SQLException {
+    public void updatePlayerStats(@NotNull PlayerStats playerStats) throws SQLException {
         String uuid = playerStats.getUuid();
         if (!cache.containsKey(uuid)) {
             PreparedStatement statement = prepareStatement("UPDATE player_stats SET deaths = ?, player_kills = ?, mob_kills = ?, blocks_broken = ?, blocks_placed = ?, last_login = ?, login_streak = ?, logins = ?, chat_messages_send = ?, playtime = ? WHERE uuid = ?");
@@ -211,7 +215,7 @@ public class Database extends SimpleDatabase {
         return milestoneList;
     }
 
-    public void deletePlayerStats(PlayerStats playerStats) throws SQLException {
+    public void deletePlayerStats(@NotNull PlayerStats playerStats) throws SQLException {
         PreparedStatement statement = prepareStatement("DELETE FROM player_stats WHERE uuid = ?");
         statement.setString(1, playerStats.getUuid());
 
