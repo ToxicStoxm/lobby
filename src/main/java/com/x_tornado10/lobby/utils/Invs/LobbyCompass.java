@@ -19,13 +19,11 @@ public class LobbyCompass extends Menu {
 
     @Position(20)
     private final Button joinLobbyButton;
-    @Position(21)
-    private final Button joinRevolutionSMPButton;
 
-    @Position(22)
+    @Position(21)
     private final Button joinSMP2025;
 
-    @Position(23)
+    @Position(22)
     private final Button joinSummerSMP2025;
 
     public LobbyCompass() {
@@ -50,28 +48,6 @@ public class LobbyCompass extends Menu {
                         .lore(
                                 "",
                                 ChatColor.GRAY + "Return to the Lobby"
-                        )
-                        .make();
-            }
-        };
-
-        joinRevolutionSMPButton = new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                plugin.sendPlayerToServer(player, Server.RevolutionSMP);
-                Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
-                menu.handleClose(currentChestInventory);
-                player.closeInventory();
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.GRASS_BLOCK)
-                        .name(ChatColor.GREEN + "RevolutionSMP " + ChatColor.RED + "[1.20.x]")
-                        .lore(
-                                ChatColor.DARK_GRAY + "Survival",
-                                "",
-                                ChatColor.GRAY + "Join the RevolutionSMP server."
                         )
                         .make();
             }
