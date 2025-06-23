@@ -10,32 +10,247 @@ Milestones:
     Color: "#93CB56"
     Playtime: 3600
   3:
+    Title: "Newcomer"
+    Subtitle: "2 hours of exploration! The world is opening up before you!"
+    Color: "#ff6b35"
+    Playtime: 7200
+  4:
+    Title: "Learner"
+    Subtitle: "5 hours of learning the ropes! You're getting the hang of it!"
+    Color: "#4ecdc4"
+    Playtime: 18000
+  5:
     Title: "Hustler"
     Subtitle: "What? It's already been 10 hours since your first steps on the Server? Time flies by..."
     Color: "#9A2A2A"
     Playtime: 36000
-  4:
+  6:
+    Title: "Dedicated"
+    Subtitle: "15 hours of dedication! Your commitment is showing!"
+    Color: "#45b7d1"
+    Playtime: 54000
+  7:
     Title: "Worker"
     Subtitle: "You officially spent 1 Real life day in a Game. Go touch some good old grass!"
     Color: "#03d3fc"
     Playtime: 86400
-  5:
+  8:
+    Title: "Focused"
+    Subtitle: "30 hours of focused gameplay! You're in the zone!"
+    Color: "#96ceb4"
+    Playtime: 108000
+  9:
+    Title: "Committed"
+    Subtitle: "40 hours of pure commitment! Nothing stops you!"
+    Color: "#feca57"
+    Playtime: 144000
+  10:
     Title: "Crafter"
     Subtitle: "48 hours and you still aren't tired? Great job!"
     Color: "#7851a6"
     Playtime: 172800
-  6:
+  11:
+    Title: "Persistent"
+    Subtitle: "60 hours of persistence! Your determination is inspiring!"
+    Color: "#ff9ff3"
+    Playtime: 216000
+  12:
     Title: "Miner"
     Subtitle: "The 3rd real life day on the server! You are doing great to become a pro!"
     Color: "#aaa9ad"
     Playtime: 259200
-  7:
-    Title: "Pro"
-    Subtitle: "You accomplished great things on this server! You deserve to be a real pro! Thanks for your commitment! (100 hours reached)"
-    Color: "#d4af37"
+  13:
+    Title: "Builder"
+    Subtitle: "80 hours of building mastery! Your creations are impressive!"
+    Color: "#54a0ff"
+    Playtime: 288000
+  14:
+    Title: "Explorer"
+    Subtitle: "100 hours of exploration! You've seen every corner of the world!"
+    Color: "#5f27cd"
     Playtime: 360000
-  8:
-    Title: "Grand Master"
-    Subtitle: "Whats wrong with you?! You are totally of some other breed!"
-    Color: "#000000"
+  15:
+    Title: "Survivor"
+    Subtitle: "5 days of survival skills! You've mastered the basics!"
+    Color: "#00d2d3"
+    Playtime: 432000
+  16:
+    Title: "Adventurer"
+    Subtitle: "150 hours of epic adventures! The world is your playground!"
+    Color: "#ff6348"
+    Playtime: 540000
+  17:
+    Title: "Veteran"
+    Subtitle: "One week on the server! You're officially a veteran!"
+    Color: "#2ed573"
+    Playtime: 604800
+  18:
+    Title: "Pro"
+    Subtitle: "200 hours of professional gameplay! You deserve the title!"
+    Color: "#d4af37"
+    Playtime: 720000
+  19:
+    Title: "Expert"
+    Subtitle: "250 hours of expertise! Your skills are undeniable!"
+    Color: "#1dd1a1"
+    Playtime: 900000
+  20:
+    Title: "Master"
+    Subtitle: "300 hours of mastery! Few can match your abilities!"
+    Color: "#ffa502"
+    Playtime: 1080000
+  21:
+    Title: "Champion"
+    Subtitle: "Two weeks of championship play! You're a true champion!"
+    Color: "#ff4757"
+    Playtime: 1209600
+  22:
+    Title: "Elite"
+    Subtitle: "400 hours among the elite! Excellence is your standard!"
+    Color: "#3742fa"
+    Playtime: 1440000
+  23:
+    Title: "Legend"
+    Subtitle: "500 hours of legendary status! Stories are told about you!"
+    Color: "#a55eea"
+    Playtime: 1800000
+  24:
+    Title: "Sage"
+    Subtitle: "Three weeks of wisdom! You're a sage of the server!"
+    Color: "#26de81"
+    Playtime: 1814400
+  25:
+    Title: "Titan"
+    Subtitle: "600 hours of titanic effort! You tower above others!"
+    Color: "#fd79a8"
+    Playtime: 2160000
+  26:
+    Title: "Overlord"
+    Subtitle: "One month of dominance! You rule this realm!"
+    Color: "#fdcb6e"
+    Playtime: 2592000
+  27:
+    Title: "Phoenix"
+    Subtitle: "800 hours rising and rebuilding! You're unstoppable!"
+    Color: "#6c5ce7"
+    Playtime: 2880000
+  28:
+    Title: "Immortal"
+    Subtitle: "1000 hours! You've achieved digital immortality!"
+    Color: "#a29bfe"
+    Playtime: 3600000
+  29:
+    Title: "Divine"
+    Subtitle: "6 weeks of divine dedication! The gods smile upon you!"
+    Color: "#fab1a0"
+    Playtime: 3628800
+  30:
+    Title: "Cosmic"
+    Subtitle: "1200 hours among the stars! Your presence is cosmic!"
+    Color: "#00b894"
+    Playtime: 4320000
+  31:
+    Title: "Eternal"
+    Subtitle: "1500 hours! You've transcended time itself!"
+    Color: "#e17055"
+    Playtime: 5400000
+  32:
+    Title: "Infinite"
+    Subtitle: "Two months of infinite possibilities! Reality bends to your will!"
+    Color: "#81ecec"
+    Playtime: 5184000
+  33:
+    Title: "Godlike"
+    Subtitle: "2000 hours! Mortals can only dream of such commitment!"
+    Color: "#74b9ff"
+    Playtime: 7200000
+  34:
+    Title: "Transcendent"
+    Subtitle: "10 weeks of transcendent gameplay! You've surpassed all limits!"
+    Color: "#55a3ff"
+    Playtime: 6048000
+  35:
+    Title: "Omnipotent"
+    Subtitle: "2500 hours of unlimited power! Nothing is impossible!"
+    Color: "#e84393"
+    Playtime: 9000000
+  36:
+    Title: "Universe"
+    Subtitle: "3 months! You contain entire universes within your experience!"
+    Color: "#0984e3"
+    Playtime: 7776000
+  37:
+    Title: "Apex"
+    Subtitle: "3000 hours at the apex! Peak performance achieved!"
+    Color: "#a29bfe"
+    Playtime: 10800000
+  38:
+    Title: "Zenith"
+    Subtitle: "4 months at the zenith! You've reached the highest point!"
+    Color: "#6c5ce7"
+    Playtime: 10368000
+  39:
+    Title: "Eclipse"
+    Subtitle: "4000 hours! You eclipse all others in commitment!"
+    Color: "#2d3436"
+    Playtime: 14400000
+  40:
+    Title: "Nebula"
+    Subtitle: "5 months in the cosmic nebula! Star dust flows through you!"
+    Color: "#fd79a8"
+    Playtime: 12960000
+  41:
+    Title: "Quantum"
+    Subtitle: "5000 hours in quantum reality! You exist in multiple dimensions!"
+    Color: "#fdcb6e"
+    Playtime: 18000000
+  42:
+    Title: "Void"
+    Subtitle: "6 months! You've gazed into the void and it gazed back!"
+    Color: "#00cec9"
+    Playtime: 15552000
+  43:
+    Title: "Singularity"
+    Subtitle: "6000 hours at the singularity! Time and space converge!"
+    Color: "#55a3ff"
+    Playtime: 21600000
+  44:
+    Title: "Matrix"
+    Subtitle: "8 months! You've seen through the matrix!"
+    Color: "#e17055"
+    Playtime: 20736000
+  45:
+    Title: "Multiverse"
+    Subtitle: "8000 hours! You've explored every corner of the multiverse!"
+    Color: "#74b9ff"
+    Playtime: 28800000
+  46:
+    Title: "Omniscient"
+    Subtitle: "10 months of all-knowing wisdom! Knowledge flows through you!"
+    Color: "#e84393"
+    Playtime: 25920000
+  47:
+    Title: "Absolute"
+    Subtitle: "10000 hours of absolute mastery! Perfection personified!"
+    Color: "#0984e3"
     Playtime: 36000000
+  48:
+    Title: "One Year"
+    Subtitle: "12 months! One full year of dedication! Legendary commitment!"
+    Color: "#d4af37"
+    Playtime: 31536000
+  49:
+    Title: "Infinite Loop"
+    Subtitle: "15000 hours in an infinite loop! Time circles around you!"
+    Color: "#a29bfe"
+    Playtime: 54000000
+  50:
+    Title: "The Eternal"
+    Subtitle: "20000 hours as the eternal! Time itself was born from you!"
+    Color: "#6c5ce7"
+    Playtime: 72000000
+  51:
+    Title: "Grand Master"
+    Subtitle: "25000 hours! You are truly of some other breed! Ultimate achievement unlocked!"
+    Color: "#000000"
+    Playtime: 90000000
