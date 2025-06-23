@@ -78,7 +78,7 @@ public class LobbyCompass extends Menu {
         joinSummerSMP2025 = new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                plugin.sendPlayerToServer(player, Server.SMP2025);
+                plugin.sendPlayerToServer(player, Server.SUMMER_SMP2025);
                 Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
                 menu.handleClose(currentChestInventory);
                 player.closeInventory();
