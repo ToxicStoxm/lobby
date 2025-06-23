@@ -131,7 +131,7 @@ public class PlayerStatsListener implements Listener {
                     } else last_update.remove(entry.getKey());
                 }
             }
-        }.runTaskTimer(plugin, 20,100);
+        }.runTaskTimerAsynchronously(plugin, 20,100);
     }
     @EventHandler
     public void onQuit(@NotNull PlayerQuitEvent e) {
@@ -254,29 +254,45 @@ public class PlayerStatsListener implements Listener {
         UserManager mgr = lpAPI.getUserManager();
         GroupManager gmgr = lpAPI.getGroupManager();
         User usr = mgr.getUser(p.getUniqueId());
-        if (usr == null) return null;
-        for (PrefixNode node :  Objects.requireNonNull(gmgr.getGroup(usr.getPrimaryGroup())).getNodes(NodeType.PREFIX)) {
+        if (usr == null) {
+            return null;
+        }
+        p.sendMessage("1");
+        for (PrefixNode node : Objects.requireNonNull(gmgr.getGroup(usr.getPrimaryGroup())).getNodes(NodeType.PREFIX)) {
+            p.sendMessage("2");
             if (Convertor.containsHexCode(node.getMetaValue())) {
+                p.sendMessage("3");
                 String currentHex = Convertor.extractHexCode(node.getMetaValue());
                 if (currentHex != null) {
+                    p.sendMessage("4");
                     if (!currentHex.equals(m.color())) {
+                        p.sendMessage("5");
                         boolean granted = false;
                         for (PrefixNode node0 : usr.getNodes(NodeType.PREFIX)) {
+                            p.sendMessage("6");
                             if (Convertor.containsHexCode(node0.getMetaValue())) {
+                                p.sendMessage("7");
                                 String currentHex0 = Convertor.extractHexCode(node0.getMetaValue());
                                 if (currentHex0 != null && currentHex0.equals(m.color())) {
+                                    p.sendMessage("8");
                                     granted = true;
                                     break;
                                 }
                             }
                         }
+                        p.sendMessage("9");
                         if (!granted) {
+                            p.sendMessage("10");
                             for (Node n : usr.getNodes()) {
+                                p.sendMessage("11");
                                 if (n.getType() == NodeType.PREFIX) {
+                                    p.sendMessage("12");
                                     usr.data().remove(n);
                                 }
                             }
+                            p.sendMessage("13");
                             usr.data().add(PrefixNode.builder(Convertor.replaceHexCodes(node.getMetaValue(), m.color()), 5).build());
+                            p.sendMessage("14");
                             mgr.saveUser(usr);
                             return m;
                         }
@@ -290,6 +306,7 @@ public class PlayerStatsListener implements Listener {
         return null;
     }
     private boolean displayMilestone(Player p, @Nullable Milestone m) {
+        p.sendMessage("displaying " + m.title());
         if (m == null) return false;
         String title = m.title();
         String subtitle = m.subtitle();
