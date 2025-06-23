@@ -306,7 +306,6 @@ public class PlayerStatsListener implements Listener {
         return null;
     }
     private boolean displayMilestone(Player p, @Nullable Milestone m) {
-        p.sendMessage("displaying " + m.title());
         if (m == null) return false;
         String title = m.title();
         String subtitle = m.subtitle();
