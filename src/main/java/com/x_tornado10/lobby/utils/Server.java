@@ -6,4 +6,5 @@ public class Server {
     public static final String EternalSMP = "EternalSMP";
     public static final String RevolutionSMP = "RevolutionSMP";
     public static final String SMP2025 = "SMP2025";
+    public static final String SUMMER_SMP2025 = "SUMMER-SMP2025";
 }

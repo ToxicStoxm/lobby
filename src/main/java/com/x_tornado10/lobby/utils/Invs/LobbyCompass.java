@@ -17,15 +17,16 @@ import org.mineacademy.fo.remain.CompMaterial;
 public class LobbyCompass extends Menu {
     private final Lobby plugin;
 
-    @Position(22)
+    @Position(20)
     private final Button joinLobbyButton;
-    /*@Position(24)
-    private final Button joinEternalSMPButton;*/
-    @Position(24)
+    @Position(21)
     private final Button joinRevolutionSMPButton;
 
-    @Position(20)
+    @Position(22)
     private final Button joinSMP2025;
+
+    @Position(23)
+    private final Button joinSummerSMP2025;
 
     public LobbyCompass() {
         plugin = Lobby.getInstance();
@@ -54,50 +55,6 @@ public class LobbyCompass extends Menu {
             }
         };
 
-        joinSMP2025 = new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                plugin.sendPlayerToServer(player, Server.SMP2025);
-                Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
-                menu.handleClose(currentChestInventory);
-                player.closeInventory();
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.GRASS_BLOCK)
-                        .name(ChatColor.GREEN + "SMP2025 " + ChatColor.RED + "[1.21.4]" + ChatColor.AQUA + " [NEW]")
-                        .lore(
-                                ChatColor.DARK_GRAY + "Survival",
-                                "",
-                                ChatColor.GRAY + "Join the SMP2025 server."
-                        )
-                        .make();
-            }
-        };
-
-        /*joinEternalSMPButton = new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                plugin.sendPlayerToServer(player, Server.EternalSMP);
-                Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
-                menu.handleClose(currentChestInventory);
-                player.closeInventory();
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.GRASS_BLOCK)
-                        .name(ChatColor.GREEN + "EternalSMP " + ChatColor.RED + "[1.20.1]")
-                        .lore(
-                                ChatColor.DARK_GRAY + "Survival",
-                                "",
-                                ChatColor.GRAY + "Join the EternalSMP server."
-                        )
-                        .make();
-            }
-        };*/
-
         joinRevolutionSMPButton = new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
@@ -120,6 +77,49 @@ public class LobbyCompass extends Menu {
             }
         };
 
+        joinSMP2025 = new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
+                plugin.sendPlayerToServer(player, Server.SMP2025);
+                Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
+                menu.handleClose(currentChestInventory);
+                player.closeInventory();
+            }
+
+            @Override
+            public ItemStack getItem() {
+                return ItemCreator.of(CompMaterial.GRASS_BLOCK)
+                        .name(ChatColor.GREEN + "SMP2025 " + ChatColor.RED + "[1.21.4]")
+                        .lore(
+                                ChatColor.DARK_GRAY + "Survival",
+                                "",
+                                ChatColor.GRAY + "Join the SMP2025 server."
+                        )
+                        .make();
+            }
+        };
+
+        joinSummerSMP2025 = new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
+                plugin.sendPlayerToServer(player, Server.SMP2025);
+                Inventory currentChestInventory = player.getOpenInventory().getTopInventory();
+                menu.handleClose(currentChestInventory);
+                player.closeInventory();
+            }
+
+            @Override
+            public ItemStack getItem() {
+                return ItemCreator.of(CompMaterial.GRASS_BLOCK)
+                        .name(ChatColor.GREEN + "Summer-SMP2025 " + ChatColor.RED + "[1.21.5]" + ChatColor.AQUA + " [NEW]")
+                        .lore(
+                                ChatColor.DARK_GRAY + "Survival",
+                                "",
+                                ChatColor.GRAY + "Join the Summer-SMP2025 server."
+                        )
+                        .make();
+            }
+        };
     }
 
     @Override
@@ -133,5 +133,4 @@ public class LobbyCompass extends Menu {
         }
         super.onPostDisplay(viewer);
     }
-
 }
