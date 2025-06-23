@@ -180,6 +180,7 @@ public class LobbyProfile extends Menu {
                     }
                 }
             }
+
             PlayerStats stats;
             try {
                 stats = plugin.getDatabase().findPlayerStatsByUUID(String.valueOf(p.getUniqueId()));
@@ -191,7 +192,7 @@ public class LobbyProfile extends Menu {
             List<Milestone> milestones = milestoneMgr.getUnlockedMilestones((double) stats.getPlaytime());
             if (milestones == null) {
                 for (int i : Item.MILESTONE_POS) {
-                    Milestone m = milestoneMgr.getMilestone(Item.MILESTONE_POS.indexOf(i) + 1);
+                    Milestone m = milestoneMgr.getMilestone(currentPage * 8 - 7 + Item.MILESTONE_POS.indexOf(i));
                     if (m == null) {
                         setItem(i, Item.BOUNDS());
                         for (int placeholder : Item.getPath(Item.MILESTONE_POS.indexOf(i) + 1 > 8 ? adjustBelowEight(Item.MILESTONE_POS.indexOf(i) + 1) : Item.MILESTONE_POS.indexOf(i) + 1, currentPage, pages, pagesC)) {
@@ -206,7 +207,7 @@ public class LobbyProfile extends Menu {
                 }
             } else {
                 for (int i : Item.MILESTONE_POS) {
-                    int milestone = currentPage * 8 - 7 + Item.MILESTONE_POS.indexOf(i);;
+                    int milestone = currentPage * 8 - 7 + Item.MILESTONE_POS.indexOf(i);
                     if (milestones.size() <= milestone) {
                         Milestone m = milestoneMgr.getMilestone(milestone);
                         if (m == null) {
