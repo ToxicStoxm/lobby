@@ -166,6 +166,7 @@ public final class Lobby extends SimplePlugin {
         return checkGroups(p, new String[]{"owner","builder"});
     }
     public void setPlayerGroup(@NotNull Player p, String groupName) {
+        if (lpAPI == null) lpAPI = LuckPermsProvider.get();
         UserManager userManager = lpAPI.getUserManager();
         User user = userManager.getUser(p.getUniqueId());
         if (user == null) return;
